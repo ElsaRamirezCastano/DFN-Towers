@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OptionsMainMenu : MonoBehaviour
 {
@@ -17,12 +18,12 @@ public class OptionsMainMenu : MonoBehaviour
             }
             if (lastLevel != null)
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene(lastLevel.Scene);
+                SceneManager.LoadScene(lastLevel.Scene);
                 return;
             }
         }
         var firstLevel = areaList.allAreas[0].levels[0];
-        UnityEngine.SceneManagement.SceneManager.LoadScene(firstLevel.Scene);
+        SceneManager.LoadScene(firstLevel.Scene);
     }
 
     public void QuitGame(){
@@ -31,6 +32,6 @@ public class OptionsMainMenu : MonoBehaviour
     }
 
     public void ChooseLevel(){
-        UnityEngine.SceneManagement.SceneManager.LoadScene("LevelChooser");
+        SceneManager.LoadScene("LevelChooser");
     }
 }

@@ -10256,7 +10256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96ad1da8154e4ac498806f86865ebbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  areaList: {fileID: 0}
+  areaList: {fileID: 11400000, guid: 342fdf9f7abf34b73adaa784b1b8dcca, type: 2}
   counterText: {fileID: 363133127}
   MaxEnemies: 5
   gameOverScreenPrefab: {fileID: 6681804}

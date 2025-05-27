@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour{
                 counterText = counterOBJ.GetComponent<TextMeshProUGUI>();
             }
         }*/
-        UpdateCounterUI()
+        UpdateCounterUI();
     }
 
     void Start(){

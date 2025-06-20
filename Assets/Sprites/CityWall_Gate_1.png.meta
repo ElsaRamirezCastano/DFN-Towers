@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CityWall_Gate_1_0: 2459958933347089174
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

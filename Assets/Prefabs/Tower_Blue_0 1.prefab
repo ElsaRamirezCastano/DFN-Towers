@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3411291903158262762}
   - component: {fileID: 234408510281328517}
   - component: {fileID: -9157231910996450510}
+  - component: {fileID: 5868436632729228172}
   m_Layer: 0
   m_Name: Tower_Blue_0 1
   m_TagString: Untagged
@@ -212,6 +213,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ed6a38604884821828a4c0b462ded7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5868436632729228172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3984500418210268923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1938554491a674854adcfae3e57cbd5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftClickAction: {fileID: -5440875494496920979, guid: e1556706a320f48fca9014a9feaf1e0b, type: 3}
+  mousePositionAction: {fileID: 5330668696551498684, guid: e1556706a320f48fca9014a9feaf1e0b, type: 3}
 --- !u!1 &5627530472922288716
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour{
     public AreaList areaList;
@@ -30,8 +31,29 @@ public class GameManager : MonoBehaviour{
     }
 
     private void InitializePanels(){
-        SetActive(gameOverScreenPrefab, false);
-        SetActive(winPanelPrefab, false);
+        if (gameOverScreenPrefab != null)
+        {
+            CanvasGroup panelGroup = gameOverScreenPrefab.GetComponent<CanvasGroup>();
+            if (panelGroup != null)
+            {
+                panelGroup.alpha = 0f;
+                panelGroup.interactable = false;
+                panelGroup.blocksRaycasts = false;
+            }
+            SetActive(gameOverScreenPrefab, false);
+        }
+
+        if (winPanelPrefab != null)
+        {
+            CanvasGroup panelGroup = winPanelPrefab.GetComponent<CanvasGroup>();
+            if (panelGroup != null)
+            {
+                panelGroup.alpha = 0f;
+                panelGroup.interactable = false;
+                panelGroup.blocksRaycasts = false;
+            }
+            SetActive(winPanelPrefab, false);
+        }
     }
 
     private void OnDestroy(){
@@ -43,12 +65,13 @@ public class GameManager : MonoBehaviour{
         InitializePanels();
         ResetGameState();
 
-        /*if(counterText == null){
-            GameObject counterOBJ = GameObject.FindGameObjectWithTag("EnemiesInCastle");
-            if(counterOBJ != null){
-                counterText = counterOBJ.GetComponent<TextMeshProUGUI>();
+        if (BuildingSystem.current != null){
+            BuildingSystem.current.ReinitializedUI();
+            if (BuildingModeUI.instance != null){
+                BuildingModeUI.instance.ShowBuildingModeUI();
+                BuildingModeUI.instance.HideBuildingModeUI();
             }
-        }*/
+        }
         UpdateCounterUI();
     }
 
@@ -75,10 +98,53 @@ public class GameManager : MonoBehaviour{
         }
     }
 
-    private void GameOver(){
-        Time.timeScale = 0f; 
-        SetActive(gameOverScreenPrefab, true);
+    private void GameOver()
+    {
+        Debug.Log("=== INICIANDO GAME OVER ===");
+        Time.timeScale = 0f;
+        if (gameOverScreenPrefab != null)
+        {
+            Debug.Log("GameOverScreenPrefab encontrado");
+
+            SetActive(gameOverScreenPrefab, true);
+            Debug.Log($"GameObject activado: {gameOverScreenPrefab.activeInHierarchy}");
+
+            CanvasGroup panelGroup = gameOverScreenPrefab.GetComponent<CanvasGroup>();
+            if (panelGroup != null)
+            {
+                Debug.Log("CanvasGroup encontrado, configurando...");
+                panelGroup.alpha = 1f;
+                panelGroup.interactable = true;
+                panelGroup.blocksRaycasts = true;
+
+                Debug.Log($"CanvasGroup configurado - Alpha: {panelGroup.alpha}, Interactable: {panelGroup.interactable}, BlocksRaycasts: {panelGroup.blocksRaycasts}");
+            }
+            else
+            {
+                Debug.LogWarning("No se encontró CanvasGroup en el GameOverPanel");
+            }
+
+            Button[] buttons = gameOverScreenPrefab.GetComponentsInChildren<Button>();
+            Debug.Log($"Botones encontrados en GameOverPanel: {buttons.Length}");
+
+            foreach (Button btn in buttons)
+            {
+                Debug.Log($"Botón: {btn.name} - Interactable: {btn.interactable} - Enabled: {btn.enabled}");
+                btn.interactable = true;
+                btn.enabled = true;
+
+                Image img = btn.GetComponent<Image>();
+                if (img != null)
+                {
+                    img.raycastTarget = true;
+                    Debug.Log($"Image del botón {btn.name} - RaycastTarget: {img.raycastTarget}");
+                }
+            }
+        }
+
+
         gameOver = true;
+        Debug.Log("Game Over completado");
     }
 
     public int GetEnemyCount(){
@@ -86,17 +152,20 @@ public class GameManager : MonoBehaviour{
     }
 
     public void RestartGame(){
-       /* Destroy(gameOverScreenPrefab);
-        Destroy(winPanelPrefab);*/
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void ResetGameState(){
         enemiesReachedEnd = 0;
         gameOver = false;
-        if(BuildingSystem.current != null){
-            BuildingSystem.current.ResetTowerCount();
+        if (BuildingSystem.current != null){
+            BuildingSystem.current.towers.Clear();
+            BuildingSystem.current.RestoreDefaultPaths();
+            BuildingSystem.current.ExitBuildMode();
         }
+        /*if(BuildingModeUI.instancne != null){
+            BuildingModeUI.instance.ResetUI();
+        }*/
         UpdateCounterUI();
     }
 
@@ -118,26 +187,33 @@ public class GameManager : MonoBehaviour{
 
     public void WinGame(){
         if(!gameOver){
-            Time.timeScale = 0f; 
-            SetActive(winPanelPrefab, true);
+            Time.timeScale = 0f;
+            if (winPanelPrefab != null)
+            {
+                SetActive(winPanelPrefab, true);
+                CanvasGroup panelGroup = winPanelPrefab.GetComponent<CanvasGroup>();
+                if (panelGroup != null)
+                {
+                    panelGroup.alpha = 1f;
+                    panelGroup.interactable = true;
+                    panelGroup.blocksRaycasts = true;
+                }
+            }
             gameOver = true;
 
             string areaName = PlayerPrefs.GetString("CurrentArea", "");
             AreaData area = areaList.allAreas.Find(a => a.areaName == areaName);
-            if (area != null)
-            {
+            if (area != null){
                 string currentSceneName = SceneManager.GetActiveScene().name;
                 int currentIndex = area.levels.FindIndex(level => level.Scene == currentSceneName);
-                if (currentIndex >= 0 && currentIndex < area.levels.Count - 1)
-                {
+                if (currentIndex >= 0 && currentIndex < area.levels.Count - 1){
                     string nextLevelID = area.levels[currentIndex + 1].levelID;
                     PlayerPrefs.SetInt(nextLevelID, 1);
                     PlayerPrefs.SetString("LastUnlockedLevel", nextLevelID);
                     PlayerPrefs.Save();
                     Debug.Log($"Level {nextLevelID} unlocked");
                 }
-                else
-                {
+                else{
                     Debug.Log("No more levels available");
                 }
             }

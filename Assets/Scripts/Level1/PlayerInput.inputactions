@@ -6,9 +6,45 @@
             "id": "1dec7140-8177-4b82-ad23-f45af28c520e",
             "actions": [
                 {
-                    "name": "Drag",
+                    "name": "ToggleBuildMode",
                     "type": "Button",
-                    "id": "3752621e-9e23-4084-b971-1eae12fb8777",
+                    "id": "7bba5db2-53b4-45d4-9520-38e576e77654",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "a9e86674-ec84-4518-93da-573544997f92",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightClick",
+                    "type": "Button",
+                    "id": "85195561-9f23-4297-a747-1708b1da0c92",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "66017f05-0612-4dba-9092-ce6c1096a330",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraDrag",
+                    "type": "Button",
+                    "id": "802b9aca-d2ef-44a7-97aa-f165c4fedcf8",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -18,12 +54,56 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "5f1f4895-34e5-47f3-9e21-002dd44874b7",
+                    "id": "2e542208-2733-456e-a29c-62737fb666cb",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleBuildMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "344268de-8f7c-4156-abe2-96fd51c61576",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ec805a4-4a9f-4586-b3ed-e00db3ca5b33",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Drag",
+                    "action": "RightClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a261cedf-ee2f-4aa5-aefb-9647a1f00166",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "197dc956-a317-404b-a046-9db08da890fb",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

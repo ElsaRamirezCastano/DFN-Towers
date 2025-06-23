@@ -35,7 +35,7 @@ public class PathSelector : MonoBehaviour{
 
         if (targetCanvas == null)
         {
-            targetCanvas = FindObjectOfType<Canvas>();
+            targetCanvas = FindFirstObjectByType<Canvas>();
         }
 
         CreatePathActionPanel();

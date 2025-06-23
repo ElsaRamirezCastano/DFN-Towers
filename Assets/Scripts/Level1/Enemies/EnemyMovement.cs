@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
         lastPosition = transform.position;
 
         if(!waypointsAssigned){
-            WaypointSystem waypointSystem = FindObjectOfType<WaypointSystem>();
+            WaypointSystem waypointSystem = FindFirstObjectByType<WaypointSystem>();
                 if(waypointSystem != null){
                     foreach(Transform waypoint in waypointSystem.GetWaypoints()){
                         waypoints.Add(waypoint);

@@ -20,7 +20,7 @@ public class LevelSelectManager : MonoBehaviour
     public HashSet<string> UnlockedLevelsID = new HashSet<string>();
 
     private LevelSelectEventSystemHandler eventSystemHandler;
-    private Camera camera;
+    private new Camera camera;
 
     private List<GameObject> levelButtons = new List<GameObject>();
     private Dictionary<GameObject, Vector3> buttonPositions = new Dictionary<GameObject, Vector3>();
@@ -188,7 +188,7 @@ public class LevelSelectManager : MonoBehaviour
         UnlockedLevelsID.Clear();
         LoadUnlockedLevels();
         CreateLevelButtons();
-        FindObjectOfType<WorldBackgroundSwitcher>().SetWorldBackground(CurrentArea.areaName);
+        FindFirstObjectByType<WorldBackgroundSwitcher>().SetWorldBackground(CurrentArea.areaName);
     }
 
     private void UpdateWorldNavigationButtons()

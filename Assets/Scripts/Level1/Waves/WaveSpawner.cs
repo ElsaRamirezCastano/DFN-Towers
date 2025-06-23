@@ -28,7 +28,7 @@ public class WaveSpawner : MonoBehaviour
         timeBtwnSpawns = currentWave.TimeBeforeThisWave;
 
         if(waypointSystem == null){
-            waypointSystem = FindObjectOfType<WaypointSystem>();
+            waypointSystem = FindFirstObjectByType<WaypointSystem>();
             if(waypointSystem == null){
                 Debug.LogError("WaypointSystem not found, the enemies will not move");
             }

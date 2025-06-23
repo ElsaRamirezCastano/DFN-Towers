@@ -32,7 +32,7 @@ public class ButtonDiagnostic : MonoBehaviour
         Debug.Log("=== DIAGNÓSTICO COMPLETO DE UI ===");
         
         // 1. Verificar Canvas
-        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
         Debug.Log($"Canvases encontrados: {canvases.Length}");
         
         foreach (Canvas canvas in canvases)
@@ -56,7 +56,7 @@ public class ButtonDiagnostic : MonoBehaviour
         }
         
         // 2. Verificar EventSystem
-        EventSystem eventSystem = FindObjectOfType<EventSystem>();
+        EventSystem eventSystem = FindFirstObjectByType<EventSystem>();
         if (eventSystem != null)
         {
             Debug.Log($"EventSystem: ✓ {eventSystem.name}");
@@ -69,7 +69,7 @@ public class ButtonDiagnostic : MonoBehaviour
         }
         
         // 3. Análisis detallado de botones
-        Button[] buttons = FindObjectsOfType<Button>();
+        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
         Debug.Log($"\nBotones encontrados: {buttons.Length}");
         
         foreach (Button button in buttons)
@@ -175,7 +175,7 @@ public class ButtonDiagnostic : MonoBehaviour
             Debug.LogWarning("¡No se detectó ningún objeto UI!");
             
             // Verificar si el mouse está sobre algún botón manualmente
-            Button[] buttons = FindObjectsOfType<Button>();
+            Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
             foreach (Button button in buttons)
             {
                 if (IsMouseOverButton(button, mousePosition))
@@ -229,7 +229,7 @@ public class ButtonDiagnostic : MonoBehaviour
     void DrawDebugInfo()
     {
         // Dibujar información visual en la pantalla
-        Button[] buttons = FindObjectsOfType<Button>();
+        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
         
         foreach (Button button in buttons)
         {

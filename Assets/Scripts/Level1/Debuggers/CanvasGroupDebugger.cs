@@ -29,7 +29,7 @@ public class CanvasGroupDebugger : MonoBehaviour
         Debug.Log("=================== CANVAS GROUP DEBUG START ===================");
         
         // Encontrar todos los CanvasGroups en la escena
-        CanvasGroup[] allCanvasGroups = FindObjectsOfType<CanvasGroup>();
+        CanvasGroup[] allCanvasGroups = FindObjectsByType<CanvasGroup>(FindObjectsSortMode.None);
         
         Debug.Log($"TOTAL CANVAS GROUPS ENCONTRADOS: {allCanvasGroups.Length}");
         
@@ -94,7 +94,7 @@ public class CanvasGroupDebugger : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
         Debug.Log($"========== DEBUG BOTÓN BAJO MOUSE ({mousePos}) ==========");
         
-        Button[] allButtons = FindObjectsOfType<Button>();
+        Button[] allButtons = FindObjectsByType<Button>(FindObjectsSortMode.None);
         Debug.Log($"Total botones en escena: {allButtons.Length}");
         
         bool foundButtonUnderMouse = false;

@@ -74,7 +74,7 @@ public class InputSystemDebugger : MonoBehaviour
             Debug.Log($"Gamepad device found: {gamepad.name}");
         }
             
-            var inputModule = FindObjectOfType<InputSystemUIInputModule>();
+            var inputModule = FindFirstObjectByType<InputSystemUIInputModule>();
             if (inputModule != null)
             {
                 Debug.Log($"InputSystemUIInputModule found: {inputModule.name}");
@@ -111,7 +111,7 @@ public class InputSystemDebugger : MonoBehaviour
             }
         #endif
 
-            var standaloneInputModule = FindObjectOfType<StandaloneInputModule>();
+            var standaloneInputModule = FindFirstObjectByType<StandaloneInputModule>();
             if (standaloneInputModule != null)
             {
                 Debug.Log($"StandaloneInputModule found: {standaloneInputModule.name}");

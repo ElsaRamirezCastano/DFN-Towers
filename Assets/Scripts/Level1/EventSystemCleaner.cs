@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 public class EventSystemCleaner : MonoBehaviour{
     void OnEnable()
     {
-        var existingEventSystems = FindObjectsOfType<EventSystem>();
-        if (existingEventSystems.Length > 1)
+        var existingEventSystems = FindFirstObjectByType<EventSystem>();
+        if (existingEventSystems)
         {
             Destroy(gameObject);
         }

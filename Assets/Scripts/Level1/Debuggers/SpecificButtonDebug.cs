@@ -29,7 +29,7 @@ public class SpecificButtonDebug : MonoBehaviour
     
     void FindButtonsAutomatically()
     {
-        Button[] allButtons = FindObjectsOfType<Button>();
+        Button[] allButtons = FindObjectsByType<Button>(FindObjectsSortMode.None);
         Debug.Log($"Botones encontrados automáticamente: {allButtons.Length}");
         
         foreach (Button btn in allButtons)

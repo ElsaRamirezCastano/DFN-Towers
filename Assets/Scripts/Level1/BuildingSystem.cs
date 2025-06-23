@@ -135,7 +135,11 @@ public class BuildingSystem : MonoBehaviour{
         if (isInBuildMode){
             switch (currentBuildingType){
                 case BuildingType.Path:
-                    RequestPathPlacement(currentCell);
+                    if (isWaitingForConfirmation) return;
+                    else
+                    {
+                        RequestPathPlacement(currentCell);
+                    }
                     break;
                 case BuildingType.Tower:
                     break;
@@ -490,13 +494,6 @@ public class BuildingSystem : MonoBehaviour{
                 NotificationSystem.instance.ShowNotification("Path placed successfully");
             }
         }
-        else
-        {
-            if (NotificationSystem.instance != null)
-            {
-                NotificationSystem.instance.ShowNotification("Cannot place path here");
-            }
-        }
     }
 
     public void RemovePath(Vector3Int position){
@@ -538,6 +535,10 @@ public class BuildingSystem : MonoBehaviour{
     public bool CanPlacePath(Vector3Int position){
         TileBase mainTileAtPosition = MainTilemap.GetTile(position);
         if (mainTileAtPosition == takenTile){
+            if (NotificationSystem.instance != null)
+            {
+                NotificationSystem.instance.ShowNotification("Cannot place path here");
+            }
             Debug.Log("Position ocupied by TakenTile");
             return false;
         }
@@ -545,6 +546,10 @@ public class BuildingSystem : MonoBehaviour{
         TileBase pathTileAtPosition = PathTilemap.GetTile(position);
         if (pathTileAtPosition != null && pathTileAtPosition == pathTile){
             Debug.Log("Path already exists here");
+            if (NotificationSystem.instance != null)
+            {
+                NotificationSystem.instance.ShowNotification("Cannot place path here");
+            }
             return false;
         }
         Debug.Log("Position is free");

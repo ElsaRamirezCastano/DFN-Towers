@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-public class Tower : MonoBehaviour
-{
+public class Tower : MonoBehaviour{
     [SerializeField] private float range = 3f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private GameObject projectilePrefab;

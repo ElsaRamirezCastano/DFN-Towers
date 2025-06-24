@@ -3,8 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ObjectDrag : MonoBehaviour
-{
+public class ObjectDrag : MonoBehaviour{
     [Header("Input Actions")]
     [SerializeField] private InputActionReference leftClickAction;
     [SerializeField] private InputActionReference mousePositionAction;
@@ -15,14 +14,12 @@ public class ObjectDrag : MonoBehaviour
     private bool towerRegistered = false;
     private bool isInPreviewMode = true;
 
-    void Start()
-    {
+    void Start(){
         mainCamera = Camera.main;
         placeableObject = GetComponent<PlaceableObject>();
         sr = GetComponent<SpriteRenderer>();
 
-        if (sr != null)
-        {
+        if (sr != null){
             Color color = sr.color;
             sr.color = new Color(color.r, color.g, color.b, 0.6f);
         }
@@ -30,43 +27,34 @@ public class ObjectDrag : MonoBehaviour
         EnableInputActions();
     }
 
-    void OnDestroy()
-    {
+    void OnDestroy(){
         DisableInputActions();
     }
 
-    private void EnableInputActions()
-    {
-        if (leftClickAction != null)
-        {
+    private void EnableInputActions(){
+        if (leftClickAction != null){
             leftClickAction.action.Enable();
             leftClickAction.action.performed += OnLeftClick;
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Enable();
         }
     }
 
-    private void DisableInputActions()
-    {
-        if (leftClickAction != null)
-        {
+    private void DisableInputActions(){
+        if (leftClickAction != null){
             leftClickAction.action.performed -= OnLeftClick;
             leftClickAction.action.Disable();
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Disable();
         }
     }
 
-    void Update()
-    {
-        if (waitingConfirmation)
-        {
+    void Update(){
+        if (waitingConfirmation){
             return;
         }
 
@@ -74,8 +62,7 @@ public class ObjectDrag : MonoBehaviour
         UpdateVisualFeedback();
     }
 
-    private void UpdateTowerPosition()
-    {
+    private void UpdateTowerPosition(){
         Vector3 mousePos = GetMouseWorldPosition();
 
         Vector3Int cellPos = BuildingSystem.current.gridLayout.WorldToCell(mousePos);
@@ -84,10 +71,8 @@ public class ObjectDrag : MonoBehaviour
         transform.position += new Vector3(BuildingSystem.current.gridLayout.cellSize.x / 2, BuildingSystem.current.gridLayout.cellSize.y / 2, 0);
     }
 
-    private void UpdateVisualFeedback()
-    {
-        if (sr != null)
-        {
+    private void UpdateVisualFeedback(){
+        if (sr != null){
             bool canPlace = placeableObject.CanBePlaced();
             bool withinTowerLimit = BuildingSystem.current.CanPlaceTower();
             bool canPlaceAndWithinLimit = canPlace && withinTowerLimit;
@@ -97,10 +82,8 @@ public class ObjectDrag : MonoBehaviour
         }
     }
 
-    private Vector3 GetMouseWorldPosition()
-    {
-        if (mainCamera != null && mousePositionAction != null)
-        {
+    private Vector3 GetMouseWorldPosition(){
+        if (mainCamera != null && mousePositionAction != null){
             Vector2 mousePos = mousePositionAction.action.ReadValue<Vector2>();
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
             worldPos.z = 0;
@@ -109,8 +92,7 @@ public class ObjectDrag : MonoBehaviour
         return Vector3.zero;
     }
 
-    private void OnLeftClick(InputAction.CallbackContext context)
-    {
+    private void OnLeftClick(InputAction.CallbackContext context){
         if (!context.performed) return;
         if (waitingConfirmation || !isInPreviewMode) return;
 
@@ -119,53 +101,42 @@ public class ObjectDrag : MonoBehaviour
         ShowConfirmationUI(canPlace && withinTowerLimit);
     }
 
-    private void ShowConfirmationUI(bool canPlace)
-    {
+    private void ShowConfirmationUI(bool canPlace){
         waitingConfirmation = true;
 
-        if (towerRegistered)
-        {
+        if (towerRegistered){
             towerRegistered = false;
         }
 
-        if (canPlace)
-        {
-            System.Action confirmAction = () =>
-            {
+        if (canPlace){
+            System.Action confirmAction = () =>{
                 ConfirmPlacement();
             };
-            System.Action cancelAction = () =>
-            {
+            System.Action cancelAction = () =>{
                 CancelPlacement();
             };
 
-            if (ConfirmationUi.instance != null)
-            {
+            if (ConfirmationUi.instance != null){
                 ConfirmationUi.instance.ShowConfirmation(gameObject, transform.position, confirmAction, cancelAction);
             }
-            else
-            {
+            else{
                 confirmAction.Invoke();
             }
         }
-        else
-        {
+        else{
             ShowCannotPlaceNotification();
             CancelPlacement();
         }
     }
 
-    private void ConfirmPlacement()
-    {
+    private void ConfirmPlacement(){
         placeableObject.Place();
-        if (!towerRegistered)
-        {
+        if (!towerRegistered){
             BuildingSystem.current.RegisterPlacedTower(gameObject);
             towerRegistered = true;
         }
 
-        if (sr != null)
-        {
+        if (sr != null){
             Color color = sr.color;
             sr.color = new Color(color.r, color.g, color.b, 1f);
         }
@@ -175,10 +146,8 @@ public class ObjectDrag : MonoBehaviour
         BuildingSystem.current.OnTowerPlacementFinished();
     }
 
-    private void CancelPlacement()
-    {
-        if (!placeableObject.Placed)
-        {
+    private void CancelPlacement(){
+        if (!placeableObject.Placed){
             Destroy(gameObject);
         }
 
@@ -186,33 +155,8 @@ public class ObjectDrag : MonoBehaviour
         BuildingSystem.current.OnTowerPlacementFinished();
     }
 
-    /*private void LateUpdate()
-    {
-        bool mouseReleased = false;
-        if (mouse != null)
-        {
-            mouseReleased = isMousePressed && !mouse.laftButton.isPressed;
-            if (mouseReleased)
-            {
-                isMousePressed = false;
-            }
-        }
-        else
-        {
-            mouseReleased = Input.GetMouseButtonUp(0);
-        }
-        if (mouseReleased && !waitingConfirmation)
-        {
-            bool canPlace = placeableObject.CanBePlaced();
-            bool withinTowerLimit = BuildingSystem.current.CanPlaceTower();
-            ShowConfirmationUI(canPlace && withinTowerLimit);
-        }
-    }*/
-
-    private void ShowCannotPlaceNotification()
-    {
-        if (NotificationSystem.instance != null)
-        {
+    private void ShowCannotPlaceNotification(){
+        if (NotificationSystem.instance != null){
             string reason = !BuildingSystem.current.CanPlaceTower() ?
                 "Maximubn towers reached" :
                 "Cannot place tower here";

@@ -22,72 +22,59 @@ public class CameraDrag : MonoBehaviour
     private Vector3 currentVelocity = Vector3.zero;
     private Vector3 smoothedPosition;
 
-    private void Awake()
-    {
+    private void Awake(){
         mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
+        if (mainCamera == null){
             mainCamera = FindFirstObjectByType<Camera>();
         }
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable(){
         EnableInputActions();
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable(){
         DisableInputActions();
     }
 
-    private void EnableInputActions()
-    {
-        if (dragAction != null)
-        {
+    private void EnableInputActions(){
+        if (dragAction != null){
             dragAction.action.Enable();
             dragAction.action.started += OnDragStarted;
             dragAction.action.performed += OnDragPerformed;
             dragAction.action.canceled += OnDragCanceled;
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Enable();
         }
     }
 
-    private void DisableInputActions()
-    {
-        if (dragAction != null)
-        {
+    private void DisableInputActions(){
+        if (dragAction != null){
             dragAction.action.started -= OnDragStarted;
             dragAction.action.performed -= OnDragPerformed;
             dragAction.action.canceled -= OnDragCanceled;
             dragAction.action.Disable();
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Disable();
         }
     }
 
-    private void Start()
-    {
+    private void Start(){
         UpdateCameraBounds();
         smoothedPosition = transform.position;
     }
 
-    public void UpdateCameraBounds()
-    {
+    public void UpdateCameraBounds(){
 
         if (mainCamera == null) return;
         var height = mainCamera.orthographicSize;
         var width = height * mainCamera.aspect;
 
-        if (Globals.WorldBounds.size == Vector3.zero)
-        {
+        if (Globals.WorldBounds.size == Vector3.zero){
             Debug.Log("WorldBounds is not set.");
             return;
         }
@@ -98,14 +85,12 @@ public class CameraDrag : MonoBehaviour
         var minY = Globals.WorldBounds.min.y + height;
         var maxY = Globals.WorldBounds.max.y - height;
 
-        if (minX > maxX)
-        {
+        if (minX > maxX){
             float midX = (Globals.WorldBounds.min.x + Globals.WorldBounds.max.x) / 2f;
             minX = maxX = midX;
         }
 
-        if (minY > maxY)
-        {
+        if (minY > maxY){
             float midY = (Globals.WorldBounds.min.y + Globals.WorldBounds.max.y) / 2f;
             minY = maxY = midY;
         }
@@ -114,24 +99,20 @@ public class CameraDrag : MonoBehaviour
         cameraBounds.SetMinMax(new Vector3(minX, minY, 0f), new Vector3(maxX, maxY, 0f));
     }
 
-    public void OnDragStarted(InputAction.CallbackContext context)
-    {
+    public void OnDragStarted(InputAction.CallbackContext context){
         origin = GetMouseWorldPosition();
         isDragging = true;
     }
 
-    private void OnDragPerformed(InputAction.CallbackContext context)
-    {
+    private void OnDragPerformed(InputAction.CallbackContext context){
         isDragging = true;
     }
 
-    private void OnDragCanceled(InputAction.CallbackContext context)
-    {
+    private void OnDragCanceled(InputAction.CallbackContext context){
         isDragging = false;
     }
 
-    private void LateUpdate()
-    {
+    private void LateUpdate(){
         if (!isDragging) return;
 
         Vector3 currentMousePos = GetMouseWorldPosition();
@@ -142,21 +123,17 @@ public class CameraDrag : MonoBehaviour
 
         origin = currentMousePos;
 
-        if (useSmoothing)
-        {
+        if (useSmoothing){
             smoothedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothTime);
             transform.position = smoothedPosition;
         }
-        else
-        {
+        else{
             transform.position = targetPosition;
         }
     }
 
-    private Vector3 ApplyCameraBounds(Vector3 position)
-    {
-        if (Globals.WorldBounds.size == Vector3.zero)
-        {
+    private Vector3 ApplyCameraBounds(Vector3 position){
+        if (Globals.WorldBounds.size == Vector3.zero){
             return position;
         }
 
@@ -167,10 +144,8 @@ public class CameraDrag : MonoBehaviour
         );
     }
 
-    private Vector3 GetMouseWorldPosition()
-    {
-        if (mousePositionAction != null && mainCamera != null)
-        {
+    private Vector3 GetMouseWorldPosition(){
+        if (mousePositionAction != null && mainCamera != null){
             Vector2 screenPos = mousePositionAction.action.ReadValue<Vector2>();
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(screenPos);
             worldPos.z = 0;
@@ -178,6 +153,4 @@ public class CameraDrag : MonoBehaviour
         }
         return Vector3.zero;
     }
-   
-
 }

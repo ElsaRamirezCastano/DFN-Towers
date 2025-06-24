@@ -1,23 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class OptionsMainMenu : MonoBehaviour
-{
+public class OptionsMainMenu : MonoBehaviour{
     public AreaList areaList;
-    public void StartGame()
-    {
+    public void StartGame(){
         string lastLevelID = PlayerPrefs.GetString("LastUnlockedLevel", "");
 
-        if (!string.IsNullOrEmpty(lastLevelID))
-        {
+        if (!string.IsNullOrEmpty(lastLevelID)){
             LevelData lastLevel = null;
-            foreach (var area in areaList.allAreas)
-            {
+            foreach (var area in areaList.allAreas){
                 lastLevel = area.levels.Find(lvl => lvl.levelID == lastLevelID);
                 if (lastLevel != null) break;
             }
-            if (lastLevel != null)
-            {
+            if (lastLevel != null){
                 SceneManager.LoadScene(lastLevel.Scene);
                 return;
             }

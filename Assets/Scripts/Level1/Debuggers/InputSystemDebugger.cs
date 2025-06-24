@@ -6,8 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 #endif
 
-public class InputSystemDebugger : MonoBehaviour
-{
+public class InputSystemDebugger : MonoBehaviour{
 
 #if ENABLE_INPUT_SYSTEM
     private InputAction debugAction;
@@ -36,17 +35,14 @@ public class InputSystemDebugger : MonoBehaviour
 
 #else
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
+    void Update(){
+        if (Input.GetMouseButtonDown(0)){
             ExecuteDebugChecks();
         }
     }
 #endif
 
-    private void ExecuteDebugChecks()
-    {
+    private void ExecuteDebugChecks(){
         Debug.Log("======= INPUT SYSTEM DEBUG =======");
 
             #if ENABLE_INPUT_SYSTEM
@@ -63,20 +59,17 @@ public class InputSystemDebugger : MonoBehaviour
             }
 
             var keyboard = Keyboard.current;
-        if (keyboard != null)
-        {
+        if (keyboard != null){
             Debug.Log($"Keyboard device found: {keyboard.name}");
         }
         
         var gamepad = Gamepad.current;
-        if (gamepad != null)
-        {
+        if (gamepad != null){
             Debug.Log($"Gamepad device found: {gamepad.name}");
         }
             
             var inputModule = FindFirstObjectByType<InputSystemUIInputModule>();
-            if (inputModule != null)
-            {
+            if (inputModule != null){
                 Debug.Log($"InputSystemUIInputModule found: {inputModule.name}");
                 Debug.Log($"  - Enabled: {inputModule.enabled}");
                 Debug.Log($"  - Actions Asset: {inputModule.actionsAsset}");
@@ -92,52 +85,44 @@ public class InputSystemDebugger : MonoBehaviour
                     }
                 }
             }
-            else
-            {
+            else{
                 Debug.LogError("InputSystemUIInputModule NOT FOUND!");
             }
 
             Debug.Log($"Input System initialized: {InputSystem.settings != null}");
-            if (InputSystem.settings != null)
-            {
+            if (InputSystem.settings != null){
                 Debug.Log($"  - Update mode: {InputSystem.settings.updateMode}");
                 Debug.Log($"  - Compensate for screen orientation: {InputSystem.settings.compensateForScreenOrientation}");
             }
             
             Debug.Log($"Connected devices: {InputSystem.devices.Count}");
-            foreach (var device in InputSystem.devices)
-            {
+            foreach (var device in InputSystem.devices){
                 Debug.Log($"  - Device: {device.name} ({device.GetType().Name}) - Enabled: {device.enabled}");
             }
         #endif
 
             var standaloneInputModule = FindFirstObjectByType<StandaloneInputModule>();
-            if (standaloneInputModule != null)
-            {
+            if (standaloneInputModule != null){
                 Debug.Log($"StandaloneInputModule found: {standaloneInputModule.name}");
                 Debug.Log($"  - Enabled: {standaloneInputModule.enabled}");
             }
-            else
-            {
+            else{
                 Debug.LogWarning("StandaloneInputModule NOT FOUND!");
             }
 
-        if (EventSystem.current != null)
-        {
+        if (EventSystem.current != null){
             Debug.Log($"EventSystem current input module: {EventSystem.current.currentInputModule}");
             Debug.Log($"EventSystem current input module type: {EventSystem.current.currentInputModule?.GetType().Name}");
             Debug.Log($"EventSystem current input module enabled: {EventSystem.current.currentInputModule?.enabled}");
 
-            if (EventSystem.current.currentInputModule != null)
-            {
+            if (EventSystem.current.currentInputModule != null){
                 Debug.Log($"Input module is processing: {EventSystem.current.currentInputModule.IsModuleSupported()}");
             }
 
             Debug.Log($"EventSystem first selected: {EventSystem.current.firstSelectedGameObject}");
             Debug.Log($"EventSystem current selected: {EventSystem.current.currentSelectedGameObject}");
         }
-        else
-        {
+        else{
             Debug.LogError("EventSystem not found");
         }
 
@@ -159,11 +144,9 @@ public class InputSystemDebugger : MonoBehaviour
         
         var activeActions = InputSystem.ListEnabledActions();
         Debug.Log($"  - Active actions count: {activeActions.Count}");
-        if (activeActions.Count > 0)
-        {
+        if (activeActions.Count > 0){
             Debug.Log("  - Active actions:");
-            foreach (var action in activeActions)
-            {
+            foreach (var action in activeActions){
                 Debug.Log($"    - {action.name} (Map: {action.actionMap?.name})");
             }
         }

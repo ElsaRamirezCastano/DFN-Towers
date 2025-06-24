@@ -21,10 +21,6 @@ public class MenuEventSystemHandler : MonoBehaviour
    [SerializeField] protected float scaleDuration = 0.25f;
    [SerializeField] protected List<GameObject> animationExclusions = new List<GameObject>();
 
-   /*[Header("Sounds")]
-    [SerializeField] protected UnityEvent SoundEvent;
-   */
-
    protected Dictionary<Selectable, Vector3> scales = new Dictionary<Selectable, Vector3>();
 
    protected Selectable lastSelected;

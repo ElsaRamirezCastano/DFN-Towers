@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-public class WaveSpawner : MonoBehaviour
-{
+public class WaveSpawner : MonoBehaviour{
     public Wave[] waves;
     private Wave currentWave;
 

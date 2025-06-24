@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class PathDeleteButton : MonoBehaviour{
     [Header("UI References")]
     public Button deleteButton;
+    public Button cancelButton;
     public GameObject deleteButtonUI;
 
     private Vector3Int pathPosition;
@@ -14,6 +15,10 @@ public class PathDeleteButton : MonoBehaviour{
         mainCamera = Camera.main;
         if (deleteButton != null){
             deleteButton.onClick.AddListener(OnDeleteButtonClicked);
+        }
+
+        if (cancelButton != null){
+            cancelButton.onClick.AddListener(OnCancelButtonClicked);
         }
 
         HideDeleteButton();
@@ -47,23 +52,11 @@ public class PathDeleteButton : MonoBehaviour{
     }
 
     private void OnDeleteButtonClicked(){
-        Vector3 worldPos = BuildingSystem.current.gridLayout.CellToWorld(pathPosition);
-        worldPos.x += BuildingSystem.current.gridLayout.cellSize.x / 2;
-        worldPos.y += BuildingSystem.current.gridLayout.cellSize.y / 2;
+        BuildingSystem.current.RemovePath(pathPosition);
+        HideDeleteButton();
+    }
 
-        System.Action confirmAction = () =>{
-            BuildingSystem.current.RemovePath(pathPosition);
-            HideDeleteButton();
-        };
-
-        System.Action cancelAction = () =>{
-            HideDeleteButton();
-        };
-
-        if (ConfirmationUi.instance != null){
-            ConfirmationUi.instance.ShowConfirmation(null, worldPos, confirmAction, cancelAction, "Delete path?");
-        }
-
+    private void OnCancelButtonClicked(){
         HideDeleteButton();
     }
 

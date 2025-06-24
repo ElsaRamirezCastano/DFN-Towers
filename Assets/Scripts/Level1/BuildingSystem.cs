@@ -17,6 +17,9 @@ public class BuildingSystem : MonoBehaviour{
 
     public TileBase pathPreviewTile;
 
+    [Header("Path Tiles")]
+    [SerializeField] private List<TileBase> pathTileVariants = new List<TileBase>();
+
     public GameObject buildingPrefab;
     public GameObject confirmationUIPrefab;
     public GameObject notificationSystemPrefab;
@@ -35,6 +38,14 @@ public class BuildingSystem : MonoBehaviour{
     [SerializeField] private InputActionReference leftClickAction;
     [SerializeField] private InputActionReference rightClickAction;
     [SerializeField] private InputActionReference mousePositionAction;
+
+    [Header("Input hold settings")]
+    private float rightClickHoldTime = 0.5f;
+    private float rightClickHoldTimer = 0f;
+    private bool isRightClickHolding = false;
+    private bool isRightClickPressed = false;
+    private Vector3Int rightClickHoveredPosition = Vector3Int.zero;
+    private bool rightClickValidHovered = false;
 
     private BuildingType currentBuildingType = BuildingType.None;
     private bool isInBuildMode = false;
@@ -77,7 +88,8 @@ public class BuildingSystem : MonoBehaviour{
 
         if (rightClickAction != null){
             rightClickAction.action.Enable();
-            rightClickAction.action.performed += OnRightClick;
+            rightClickAction.action.started += OnRightClickStarted;
+            rightClickAction.action.canceled += OnRightClickCanceled;
         }
 
         if(mousePositionAction != null){
@@ -97,7 +109,8 @@ public class BuildingSystem : MonoBehaviour{
         }
 
         if (rightClickAction != null){
-            rightClickAction.action.performed -= OnRightClick;
+            rightClickAction.action.started -= OnRightClickStarted;
+            rightClickAction.action.canceled -= OnRightClickCanceled;
             rightClickAction.action.Disable();
         }
         
@@ -136,8 +149,7 @@ public class BuildingSystem : MonoBehaviour{
             switch (currentBuildingType){
                 case BuildingType.Path:
                     if (isWaitingForConfirmation) return;
-                    else
-                    {
+                    else{
                         RequestPathPlacement(currentCell);
                     }
                     break;
@@ -149,13 +161,28 @@ public class BuildingSystem : MonoBehaviour{
         }  
     }
 
-    private void OnRightClick(InputAction.CallbackContext context){
+    private void OnRightClickStarted(InputAction.CallbackContext context){
         if (!systemInitialized) return;
 
         if (isInBuildMode && currentBuildingType == BuildingType.Path){
-            Vector3 mouseWorldPos = GetMouseWorldPosition();
-            Vector3Int currentCell = gridLayout.WorldToCell(mouseWorldPos);
-            RemovePath(currentCell);
+                isRightClickPressed = true;
+                rightClickHoldTimer = 0f;
+                isRightClickHolding = false;
+
+                Vector3 mouseWolrdPos = GetMouseWorldPosition();
+                Vector3Int currentCell = gridLayout.WorldToCell(mouseWolrdPos);
+                rightClickHoveredPosition = currentCell;
+                rightClickValidHovered = IsAnyPathAt(currentCell);
+        }
+    }
+
+    private void OnRightClickCanceled(InputAction.CallbackContext context){
+        if (!systemInitialized) return;
+
+        if (isInBuildMode && currentBuildingType == BuildingType.Path){
+            isRightClickPressed = false;
+            rightClickHoldTimer = 0f;
+            isRightClickHolding = false;
         }
     }
 
@@ -310,8 +337,7 @@ public class BuildingSystem : MonoBehaviour{
         pendingPathPosition = Vector3Int.one * int.MaxValue;
         isWaitingForConfirmation = false;
 
-        if (NotificationSystem.instance != null)
-        {
+        if (NotificationSystem.instance != null){
             NotificationSystem.instance.ShowNotification("You are now in view mode");
         }
     }
@@ -384,7 +410,7 @@ public class BuildingSystem : MonoBehaviour{
         }
 
         foreach (var pos in area.allPositionsWithin){
-            if (IsPathAt(new Vector3Int(pos.x, pos.y, 0))){
+            if (IsAnyPathAt(new Vector3Int(pos.x, pos.y, 0))){
                 return false;
             }
         }
@@ -411,7 +437,7 @@ public class BuildingSystem : MonoBehaviour{
             return false;
         }
 
-        if (IsPathAt(Position)){
+        if (IsAnyPathAt(Position)){
             return false;
         }
 
@@ -422,18 +448,15 @@ public class BuildingSystem : MonoBehaviour{
 
     #region Path Building 
 
-    public void RequestPathPlacement(Vector3Int position)
-    {
-        if (CanPlacePath(position))
-        {
+    public void RequestPathPlacement(Vector3Int position){
+        if (CanPlacePath(position)){
             pendingPathPosition = position;
             isWaitingForConfirmation = true;
 
             PreviewPathTilemap.SetTile(position, pathPreviewTile);
             lastPreviewCell = position;
 
-            if (ConfirmationUi.instance != null)
-            {
+            if (ConfirmationUi.instance != null){
                 Vector3 wolrdPosition = gridLayout.CellToWorld(position);
                 ConfirmationUi.instance.ShowConfirmation(
                     null,
@@ -442,42 +465,35 @@ public class BuildingSystem : MonoBehaviour{
                     () => CancelPathPlacement()
                 );
             }
-            else
-            {
+            else{
                 PlacePath(position);
                 isWaitingForConfirmation = false;
             }
         }
-        else
-        {
-            if (NotificationSystem.instance != null)
-            {
+        else{
+            if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Cannot place path here");
             }
         }
     }
 
-    public void ConfirmPathPlacement()
-    {
-        if (pendingPathPosition != Vector3Int.one * int.MaxValue)
-        {
+    public void ConfirmPathPlacement(){
+        if (pendingPathPosition != Vector3Int.one * int.MaxValue){
             PlacePath(pendingPathPosition);
             pendingPathPosition = Vector3Int.one * int.MaxValue;
             isWaitingForConfirmation = false;
         }
     }
 
-    public void CancelPathPlacement()
-    {
+    public void CancelPathPlacement(){
         pendingPathPosition = Vector3Int.one * int.MaxValue;
         isWaitingForConfirmation = false;
     }
 
-    public void PlacePath(Vector3Int position)
-    {
-        if (CanPlacePath(position))
-        {
+    public void PlacePath(Vector3Int position){
+        if (CanPlacePath(position)){
             PathTilemap.SetTile(position, pathTile);
+            MainTilemap.SetTile(position, takenTile);
             if (!pathPositions.Contains(position))
             {
                 pathPositions.Add(position);
@@ -485,12 +501,10 @@ public class BuildingSystem : MonoBehaviour{
 
             PreviewPathTilemap.SetTile(position, null);
 
-            if (lastPreviewCell == position)
-            {
+            if (lastPreviewCell == position){
                 lastPreviewCell = Vector3Int.one * int.MaxValue;
             }
-            if (NotificationSystem.instance != null)
-            {
+            if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Path placed successfully");
             }
         }
@@ -499,12 +513,15 @@ public class BuildingSystem : MonoBehaviour{
     public void RemovePath(Vector3Int position){
         TileBase tileAtPosition = PathTilemap.GetTile(position);
 
-        if (tileAtPosition != null && tileAtPosition == pathTile){
+        if (IsAnyPathAt(position)){
             PathTilemap.SetTile(position, null);
+            MainTilemap.SetTile(position, null);
             if (pathPositions.Contains(position)){
                 pathPositions.Remove(position);
             }
-            if (NotificationSystem.instance != null){
+            isWaitingForConfirmation = false;
+            if (NotificationSystem.instance != null)
+            {
                 NotificationSystem.instance.ShowNotification("Path removed");
             }
         }
@@ -523,8 +540,7 @@ public class BuildingSystem : MonoBehaviour{
         for (int x = bounds.xMin; x < bounds.xMax; x++){
             for (int y = bounds.yMin; y < bounds.yMax; y++){
                 Vector3Int position = new Vector3Int(x, y, 0);
-                TileBase tile = PathTilemap.GetTile(position);
-                if (tile != null && tile == pathTile){
+                if (IsAnyPathAt(position)){
                     pathPositions.Add(position);
                 }
             }
@@ -535,19 +551,16 @@ public class BuildingSystem : MonoBehaviour{
     public bool CanPlacePath(Vector3Int position){
         TileBase mainTileAtPosition = MainTilemap.GetTile(position);
         if (mainTileAtPosition == takenTile){
-            if (NotificationSystem.instance != null)
-            {
+            if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Cannot place path here");
             }
             Debug.Log("Position ocupied by TakenTile");
             return false;
         }
 
-        TileBase pathTileAtPosition = PathTilemap.GetTile(position);
-        if (pathTileAtPosition != null && pathTileAtPosition == pathTile){
+        if (IsAnyPathAt(position)){
             Debug.Log("Path already exists here");
-            if (NotificationSystem.instance != null)
-            {
+            if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Cannot place path here");
             }
             return false;
@@ -556,10 +569,24 @@ public class BuildingSystem : MonoBehaviour{
         return true;
     }
 
-    public bool IsPathAt(Vector3Int position){
+    public bool IsAnyPathAt(Vector3Int position)
+    {
         TileBase tileAtPosition = PathTilemap.GetTile(position);
-        return tileAtPosition == pathTile;
+
+        if (tileAtPosition == null) return false;
+
+        if (tileAtPosition == pathTile) return true;
+
+        foreach (TileBase variant in pathTileVariants)
+        {
+            if (variant != null && tileAtPosition == variant)
+            {
+                return true;
+            }
+        }
+        return false;
     }
+
 
     public void ClearAllPaths(){
         BoundsInt bounds = PathTilemap.cellBounds;
@@ -615,6 +642,7 @@ public class BuildingSystem : MonoBehaviour{
             switch (currentBuildingType){
                 case BuildingType.Path:
                     HandlePathBuilding();
+                    HandleRightClickHold();
                     break;
                 case BuildingType.Tower:
                     break;
@@ -629,8 +657,7 @@ public class BuildingSystem : MonoBehaviour{
     }
 
     private void HandlePathBuilding(){
-        if (isWaitingForConfirmation)
-        {
+        if (isWaitingForConfirmation){
             return;
         }
 
@@ -639,32 +666,67 @@ public class BuildingSystem : MonoBehaviour{
 
         if (lastPreviewCell != Vector3Int.one * int.MaxValue && lastPreviewCell != currentCell){
             PreviewPathTilemap.SetTile(lastPreviewCell, null);
-            /*TileBase tileAtLastPreview = PathTilemap.GetTile(lastPreviewCell);
-            if (tileAtLastPreview == pathPreviewTile){
-                PathTilemap.SetTile(lastPreviewCell, null);
-            }*/
         }
 
-        //TileBase currentTileAtCell = PathTilemap.GetTile(currentCell);
         if (CanPlacePath(currentCell) && pathPreviewTile != null){
             PreviewPathTilemap.SetTile(currentCell, pathPreviewTile);
             lastPreviewCell = currentCell;
         }
-        /*else if (currentTileAtCell == pathTile){
-            lastPreviewCell = currentCell;
-        }*/
         else{
             PreviewPathTilemap.SetTile(currentCell, null);
             lastPreviewCell = Vector3Int.one * int.MaxValue;
         }
     }
+
+    private void HandleRightClickHold(){
+        if (rightClickValidHovered && isRightClickPressed){
+            rightClickHoldTimer += Time.deltaTime;
+            if (rightClickHoldTimer >= rightClickHoldTime && !isRightClickHolding){
+                ShowPathDeletionPanel(rightClickHoveredPosition);
+                isRightClickHolding = true;
+            }
+        }
+        else{
+            rightClickHoldTimer = 0f;
+            isRightClickHolding = false;
+        }
+    }
+
+    private void ShowPathDeletionPanel(Vector3Int position){
+        if (IsAnyPathAt(position)){
+            PathDeleteButton pathDeleteButton = FindFirstObjectByType<PathDeleteButton>();
+            if (pathDeleteButton != null){
+                isWaitingForConfirmation = true;
+                pathDeleteButton.ShowDeleteButton(position);
+            }
+            else{
+                Debug.Log("PathDeleteButton not found, removing path directly");
+                RemovePath(position);
+            }
+        }
+    }
+
+    /*private void RemovePath(Vector3Int position){
+        TileBase tileAtPosition = PathTilemap.GetTile(position);
+
+        if (tileAtPosition != null && tileAtPosition == pathTile){
+            PathTilemap.SetTile(position, null);
+            if (pathPositions.Contains(position)){
+                pathPositions.Remove(position);
+            }
+            if (NotificationSystem.instance != null){
+                NotificationSystem.instance.ShowNotification("Path removed succesfully");
+            }
+        }
+        else{
+            if (NotificationSystem.instance != null){
+                NotificationSystem.instance.ShowNotification("No path to remove here");
+            }
+        }
+    }*/
     
     private void ClearPathPreview(){
         if (lastPreviewCell != Vector3Int.one * int.MaxValue){
-            /*TileBase tileAtLastPreview = PathTilemap.GetTile(lastPreviewCell);
-            if (tileAtLastPreview = pathTile){
-                PathTilemap.SetTile(lastPreviewCell, null);
-            }*/
             PreviewPathTilemap.SetTile(lastPreviewCell, null);
             lastPreviewCell = Vector3Int.one * int.MaxValue;
         }

@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class EnemyMovement : MonoBehaviour
-{
+public class EnemyMovement : MonoBehaviour{
     public float moveSpeed = 2f;
     private List<Transform> waypoints = new List<Transform>();
     private int currentWaypointIndex = 0;

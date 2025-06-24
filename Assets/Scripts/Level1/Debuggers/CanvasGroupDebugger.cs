@@ -1,31 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CanvasGroupDebugger : MonoBehaviour
-{
+public class CanvasGroupDebugger : MonoBehaviour{
     [Header("Debug Options")]
     public bool debugOnStart = true;
     public bool debugOnClick = true;
     public bool showDetailedLogs = true;
     
-    void Start()
-    {
-        if (debugOnStart)
-        {
+    void Start(){
+        if (debugOnStart){
             DebugAllCanvasGroups();
         }
     }
     
-    void Update()
-    {
-        if (debugOnClick && Input.GetMouseButtonDown(0))
-        {
+    void Update(){
+        if (debugOnClick && Input.GetMouseButtonDown(0)){
             DebugButtonUnderMouse();
         }
     }
     
-    public void DebugAllCanvasGroups()
-    {
+    public void DebugAllCanvasGroups(){
         Debug.Log("=================== CANVAS GROUP DEBUG START ===================");
         
         // Encontrar todos los CanvasGroups en la escena
@@ -33,14 +27,12 @@ public class CanvasGroupDebugger : MonoBehaviour
         
         Debug.Log($"TOTAL CANVAS GROUPS ENCONTRADOS: {allCanvasGroups.Length}");
         
-        if (allCanvasGroups.Length == 0)
-        {
+        if (allCanvasGroups.Length == 0){
             Debug.LogWarning("NO SE ENCONTRARON CANVAS GROUPS EN LA ESCENA");
             return;
         }
         
-        foreach (CanvasGroup cg in allCanvasGroups)
-        {
+        foreach (CanvasGroup cg in allCanvasGroups){
             Debug.Log($"--- CanvasGroup: {cg.name} ---");
             Debug.Log($"  Alpha: {cg.alpha}");
             Debug.Log($"  Interactable: {cg.interactable}");
@@ -50,34 +42,28 @@ public class CanvasGroupDebugger : MonoBehaviour
             Debug.Log($"  Path: {GetGameObjectPath(cg.gameObject)}");
             
             // ALERTA SI HAY PROBLEMAS
-            if (cg.alpha <= 0)
-            {
+            if (cg.alpha <= 0){
                 Debug.LogError($"  *** ALERTA: Alpha = 0 en {cg.name} ***");
             }
-            if (!cg.interactable)
-            {
+            if (!cg.interactable){
                 Debug.LogError($"  *** ALERTA: No interactable en {cg.name} ***");
             }
-            if (!cg.blocksRaycasts)
-            {
+            if (!cg.blocksRaycasts){
                 Debug.LogError($"  *** ALERTA: No bloquea raycasts en {cg.name} ***");
             }
             
             // Verificar si tiene CanvasGroups padres
             CanvasGroup[] parentGroups = cg.GetComponentsInParent<CanvasGroup>();
-            if (parentGroups.Length > 1)
-            {
+            if (parentGroups.Length > 1){
                 Debug.Log($"  TIENE {parentGroups.Length - 1} CANVAS GROUPS PADRES:");
-                for (int i = 1; i < parentGroups.Length; i++)
-                {
+                for (int i = 1; i < parentGroups.Length; i++){
                     CanvasGroup parent = parentGroups[i];
                     Debug.Log($"    Padre {i}: {parent.name}");
                     Debug.Log($"      - Interactable: {parent.interactable}");
                     Debug.Log($"      - BlocksRaycasts: {parent.blocksRaycasts}");
                     Debug.Log($"      - Alpha: {parent.alpha}");
                     
-                    if (!parent.interactable || !parent.blocksRaycasts || parent.alpha <= 0)
-                    {
+                    if (!parent.interactable || !parent.blocksRaycasts || parent.alpha <= 0){
                         Debug.LogError($"      *** PROBLEMA CRÍTICO: Padre '{parent.name}' está BLOQUEANDO interacción! ***");
                     }
                 }
@@ -89,8 +75,7 @@ public class CanvasGroupDebugger : MonoBehaviour
         Debug.Log("=================== CANVAS GROUP DEBUG END ===================");
     }
     
-    public void DebugButtonUnderMouse()
-    {
+    public void DebugButtonUnderMouse(){
         Vector3 mousePos = Input.mousePosition;
         Debug.Log($"========== DEBUG BOTÓN BAJO MOUSE ({mousePos}) ==========");
         
@@ -99,8 +84,7 @@ public class CanvasGroupDebugger : MonoBehaviour
         
         bool foundButtonUnderMouse = false;
         
-        foreach (Button btn in allButtons)
-        {
+        foreach (Button btn in allButtons){
             if (!btn.gameObject.activeInHierarchy) continue;
             
             RectTransform rectTransform = btn.GetComponent<RectTransform>();
@@ -113,8 +97,7 @@ public class CanvasGroupDebugger : MonoBehaviour
             Vector2 localMousePos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, mousePos, camera, out localMousePos);
             
-            if (rectTransform.rect.Contains(localMousePos))
-            {
+            if (rectTransform.rect.Contains(localMousePos)){
                 foundButtonUnderMouse = true;
                 Debug.Log($"*** BOTÓN ENCONTRADO BAJO EL MOUSE: {btn.name} ***");
                 Debug.Log($"  Botón Interactable: {btn.interactable}");
@@ -125,8 +108,7 @@ public class CanvasGroupDebugger : MonoBehaviour
                 
                 // Verificar Image del botón
                 Image btnImage = btn.GetComponent<Image>();
-                if (btnImage != null)
-                {
+                if (btnImage != null){
                     Debug.Log($"  Image RaycastTarget: {btnImage.raycastTarget}");
                     Debug.Log($"  Image Color: {btnImage.color}");
                 }
@@ -137,14 +119,11 @@ public class CanvasGroupDebugger : MonoBehaviour
                 
                 bool isBlockedByCanvasGroup = false;
                 
-                if (affectingGroups.Length == 0)
-                {
+                if (affectingGroups.Length == 0){
                     Debug.Log("  ✓ NO HAY CANVAS GROUPS afectando este botón");
                 }
-                else
-                {
-                    for (int i = 0; i < affectingGroups.Length; i++)
-                    {
+                else{
+                    for (int i = 0; i < affectingGroups.Length; i++){
                         CanvasGroup cg = affectingGroups[i];
                         bool groupBlocks = (!cg.interactable || !cg.blocksRaycasts || cg.alpha <= 0) && !cg.ignoreParentGroups;
                         
@@ -154,29 +133,24 @@ public class CanvasGroupDebugger : MonoBehaviour
                         Debug.Log($"        - Alpha: {cg.alpha}");
                         Debug.Log($"        - IgnoreParentGroups: {cg.ignoreParentGroups}");
                         
-                        if (groupBlocks)
-                        {
+                        if (groupBlocks){
                             Debug.LogError($"        *** ESTE CANVAS GROUP ESTÁ BLOQUEANDO EL BOTÓN! ***");
                             isBlockedByCanvasGroup = true;
                         }
-                        else
-                        {
+                        else{
                             Debug.Log($"        ✓ Este CanvasGroup NO bloquea");
                         }
                     }
                 }
                 
                 // DIAGNÓSTICO FINAL
-                if (isBlockedByCanvasGroup)
-                {
+                if (isBlockedByCanvasGroup){
                     Debug.LogError($"*** DIAGNÓSTICO: El botón '{btn.name}' está BLOQUEADO por CanvasGroups ***");
                 }
-                else if (!btn.IsInteractable())
-                {
+                else if (!btn.IsInteractable()){
                     Debug.LogError($"*** DIAGNÓSTICO: El botón '{btn.name}' NO es interactuable ***");
                 }
-                else
-                {
+                else{
                     Debug.Log($"*** DIAGNÓSTICO: El botón '{btn.name}' DEBERÍA FUNCIONAR ***");
                     
                     // Intentar forzar click para confirmar
@@ -188,20 +162,17 @@ public class CanvasGroupDebugger : MonoBehaviour
             }
         }
         
-        if (!foundButtonUnderMouse)
-        {
+        if (!foundButtonUnderMouse){
             Debug.LogWarning("*** NO SE ENCONTRÓ NINGÚN BOTÓN BAJO EL MOUSE ***");
         }
         
         Debug.Log("========== FIN DEBUG BOTÓN BAJO MOUSE ==========");
     }
     
-    private string GetGameObjectPath(GameObject obj)
-    {
+    private string GetGameObjectPath(GameObject obj){
         string path = obj.name;
         Transform parent = obj.transform.parent;
-        while (parent != null)
-        {
+        while (parent != null){
             path = parent.name + "/" + path;
             parent = parent.parent;
         }
@@ -210,14 +181,12 @@ public class CanvasGroupDebugger : MonoBehaviour
     
     // Método para llamar desde el inspector o otros scripts
     [ContextMenu("Debug Canvas Groups Now")]
-    public void DebugCanvasGroupsNow()
-    {
+    public void DebugCanvasGroupsNow(){
         DebugAllCanvasGroups();
     }
     
     [ContextMenu("Debug Button Under Mouse Now")]
-    public void DebugButtonUnderMouseNow()
-    {
+    public void DebugButtonUnderMouseNow(){
         DebugButtonUnderMouse();
     }
 }

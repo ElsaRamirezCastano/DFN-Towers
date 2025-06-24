@@ -3,19 +3,16 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class SpecificButtonDebug : MonoBehaviour
-{
+public class SpecificButtonDebug : MonoBehaviour{
     [Header("Referencias directas (arrastra tus botones aquí)")]
     [SerializeField] private Button restartButton;
     [SerializeField] private Button menuButton;
     
-    void Start()
-    {
+    void Start(){
         Debug.Log("=== DIAGNÓSTICO ESPECÍFICO DE BOTONES ===");
         
         // Si no tienes referencias, buscarlos automáticamente
-        if (restartButton == null || menuButton == null)
-        {
+        if (restartButton == null || menuButton == null){
             FindButtonsAutomatically();
         }
         
@@ -27,13 +24,11 @@ public class SpecificButtonDebug : MonoBehaviour
         SetupTestEvents();
     }
     
-    void FindButtonsAutomatically()
-    {
+    void FindButtonsAutomatically(){
         Button[] allButtons = FindObjectsByType<Button>(FindObjectsSortMode.None);
         Debug.Log($"Botones encontrados automáticamente: {allButtons.Length}");
         
-        foreach (Button btn in allButtons)
-        {
+        foreach (Button btn in allButtons){
             Debug.Log($"Botón encontrado: {btn.name}");
             
             // Intentar identificar por nombre
@@ -44,8 +39,7 @@ public class SpecificButtonDebug : MonoBehaviour
         }
     }
     
-    void AnalyzeSpecificButton(Button button, string buttonName)
-    {
+    void AnalyzeSpecificButton(Button button, string buttonName){
         Debug.Log($"\n--- ANÁLISIS DETALLADO: {buttonName} ---");
         Debug.Log($"Nombre del GameObject: {button.name}");
         Debug.Log($"Activo en jerarquía: {button.gameObject.activeInHierarchy}");
@@ -55,8 +49,7 @@ public class SpecificButtonDebug : MonoBehaviour
         
         // Verificar RectTransform
         RectTransform rect = button.GetComponent<RectTransform>();
-        if (rect != null)
-        {
+        if (rect != null){
             Debug.Log($"Posición mundial: {rect.position}");
             Debug.Log($"Posición local: {rect.localPosition}");
             Debug.Log($"Escala: {rect.localScale}");
@@ -70,41 +63,35 @@ public class SpecificButtonDebug : MonoBehaviour
         
         // Verificar Image
         Image img = button.GetComponent<Image>();
-        if (img != null)
-        {
+        if (img != null){
             Debug.Log($"Image raycast target: {img.raycastTarget}");
             Debug.Log($"Image color: {img.color} (Alpha: {img.color.a})");
             Debug.Log($"Image habilitado: {img.enabled}");
             Debug.Log($"Target Graphic asignado: {button.targetGraphic != null}");
             Debug.Log($"Target Graphic es la misma Image: {button.targetGraphic == img}");
             
-            if (img.color.a < 0.01f)
-            {
+            if (img.color.a < 0.01f){
                 Debug.LogError($"¡PROBLEMA! El botón {buttonName} es casi transparente (alpha muy bajo)");
             }
         }
-        else
-        {
+        else{
             Debug.LogError($"¡PROBLEMA! El botón {buttonName} no tiene componente Image");
         }
         
         // Verificar jerarquía padre
         Transform parent = button.transform.parent;
-        while (parent != null)
-        {
+        while (parent != null){
             Debug.Log($"Padre: {parent.name} - Activo: {parent.gameObject.activeInHierarchy}");
             
             // Verificar si hay un Canvas Group que pueda estar bloqueando
             CanvasGroup canvasGroup = parent.GetComponent<CanvasGroup>();
-            if (canvasGroup != null)
-            {
+            if (canvasGroup != null){
                 Debug.Log($"Canvas Group encontrado en {parent.name}:");
                 Debug.Log($"  - Alpha: {canvasGroup.alpha}");
                 Debug.Log($"  - Interactable: {canvasGroup.interactable}");
                 Debug.Log($"  - Blocks Raycasts: {canvasGroup.blocksRaycasts}");
                 
-                if (!canvasGroup.interactable || !canvasGroup.blocksRaycasts)
-                {
+                if (!canvasGroup.interactable || !canvasGroup.blocksRaycasts){
                     Debug.LogError($"¡PROBLEMA! Canvas Group en {parent.name} está bloqueando interacción");
                 }
             }
@@ -114,23 +101,19 @@ public class SpecificButtonDebug : MonoBehaviour
         
         // Verificar eventos
         Debug.Log($"Eventos persistentes: {button.onClick.GetPersistentEventCount()}");
-        if (button.onClick.GetPersistentEventCount() == 0)
-        {
+        if (button.onClick.GetPersistentEventCount() == 0){
             Debug.LogWarning($"No hay eventos asignados al botón {buttonName}");
         }
     }
     
-    void SetupTestEvents()
-    {
+    void SetupTestEvents(){
         // Limpiar eventos existentes (solo para prueba)
-        if (restartButton != null)
-        {
+        if (restartButton != null){
             restartButton.onClick.RemoveAllListeners();
             restartButton.onClick.AddListener(() => TestButtonClick("RESTART"));
         }
         
-        if (menuButton != null)
-        {
+        if (menuButton != null){
             menuButton.onClick.RemoveAllListeners();
             menuButton.onClick.AddListener(() => TestButtonClick("MENU"));
         }
@@ -138,37 +121,30 @@ public class SpecificButtonDebug : MonoBehaviour
         Debug.Log("Eventos de prueba configurados. Haz clic en los botones para probar.");
     }
     
-    void TestButtonClick(string buttonName)
-    {
+    void TestButtonClick(string buttonName){
         Debug.Log($"¡¡¡ÉXITO!!! Botón {buttonName} clickeado correctamente");
         
         // Efecto visual para confirmar
-        if (buttonName == "RESTART")
-        {
+        if (buttonName == "RESTART"){
             Debug.Log("Simulando reinicio de juego...");
         }
-        else if (buttonName == "MENU")
-        {
+        else if (buttonName == "MENU"){
             Debug.Log("Simulando ir al menú...");
         }
     }
     
-    void Update()
-    {
+    void Update(){
         // Detección manual de clics para debugging
-        if (Input.GetMouseButtonDown(0))
-        {
+        if (Input.GetMouseButtonDown(0)){
             Vector2 mousePos = Input.mousePosition;
             Debug.Log($"Clic detectado en: {mousePos}");
             
             // Verificar manualmente si el mouse está sobre cada botón
-            if (restartButton != null && IsMouseOverButton(restartButton, mousePos))
-            {
+            if (restartButton != null && IsMouseOverButton(restartButton, mousePos)){
                 Debug.Log("Mouse está sobre RESTART button - debería funcionar");
             }
             
-            if (menuButton != null && IsMouseOverButton(menuButton, mousePos))
-            {
+            if (menuButton != null && IsMouseOverButton(menuButton, mousePos)){
                 Debug.Log("Mouse está sobre MENU button - debería funcionar");
             }
             
@@ -180,21 +156,18 @@ public class SpecificButtonDebug : MonoBehaviour
             EventSystem.current.RaycastAll(eventData, results);
             
             Debug.Log($"Objetos detectados por raycast: {results.Count}");
-            foreach (var result in results)
-            {
+            foreach (var result in results){
                 Debug.Log($"  - {result.gameObject.name} (Distancia: {result.distance})");
                 
                 Button btn = result.gameObject.GetComponent<Button>();
-                if (btn != null)
-                {
+                if (btn != null){
                     Debug.Log($"    Es un botón: {btn.interactable}");
                 }
             }
         }
     }
     
-    bool IsMouseOverButton(Button button, Vector2 mousePosition)
-    {
+    bool IsMouseOverButton(Button button, Vector2 mousePosition){
         RectTransform rectTransform = button.GetComponent<RectTransform>();
         Canvas canvas = button.GetComponentInParent<Canvas>();
         
@@ -204,25 +177,20 @@ public class SpecificButtonDebug : MonoBehaviour
     
     // Métodos para llamar desde el Inspector
     [ContextMenu("Forzar Análisis")]
-    public void ForceAnalysis()
-    {
+    public void ForceAnalysis(){
         Start();
     }
     
     [ContextMenu("Simular Clic Restart")]
-    public void SimulateRestartClick()
-    {
-        if (restartButton != null)
-        {
+    public void SimulateRestartClick(){
+        if (restartButton != null){
             restartButton.onClick.Invoke();
         }
     }
     
     [ContextMenu("Simular Clic Menu")]
-    public void SimulateMenuClick()
-    {
-        if (menuButton != null)
-        {
+    public void SimulateMenuClick(){
+        if (menuButton != null){
             menuButton.onClick.Invoke();
         }
     }

@@ -29,12 +29,10 @@ public class PathSelector : MonoBehaviour{
     
     private bool isMousePressed = false;
 
-    void Start()
-    {
+    void Start(){
         mainCamera = Camera.main;
 
-        if (targetCanvas == null)
-        {
+        if (targetCanvas == null){
             targetCanvas = FindFirstObjectByType<Canvas>();
         }
 
@@ -42,64 +40,51 @@ public class PathSelector : MonoBehaviour{
         EnableInputAction();
     }
 
-    void OnDestroy()
-    {
+    void OnDestroy(){
         DisableInputAction();
 
-        if (pathActionPanel != null)
-        {
+        if (pathActionPanel != null){
             Destroy(pathActionPanel);
         }
     }
 
-    private void EnableInputAction()
-    {
-        if (leftClickAction != null)
-        {
+    private void EnableInputAction(){
+        if (leftClickAction != null){
             leftClickAction.action.Enable();
             leftClickAction.action.started += OnLeftClick;
             leftClickAction.action.canceled += OnLeftClick;
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Enable();
         }
     }
 
-    private void DisableInputAction()
-    {
-        if (leftClickAction != null)
-        {
+    private void DisableInputAction(){
+        if (leftClickAction != null){
             leftClickAction.action.started -= OnLeftClick;
             leftClickAction.action.canceled -= OnLeftClick;
             leftClickAction.action.Disable();
         }
 
-        if (mousePositionAction != null)
-        {
+        if (mousePositionAction != null){
             mousePositionAction.action.Disable();
         }
     }
 
-    private void CreatePathActionPanel()
-    {
-        if (pathActionPanelPrefab != null && pathActionPanel == null)
-        {
-            if (targetCanvas != null)
-            {
+    private void CreatePathActionPanel(){
+        if (pathActionPanelPrefab != null && pathActionPanel == null){
+            if (targetCanvas != null){
                 pathActionPanel = Instantiate(pathActionPanelPrefab, targetCanvas.transform);
             }
-            else
-            {
+            else{
                 pathActionPanel = Instantiate(pathActionPanelPrefab);
                 Debug.Log("No canvas found, this may cause ui problems");
             }
             pathActionPanel.name = "PathActionPanel";
 
             panelCanvasGroup = pathActionPanel.GetComponent<CanvasGroup>();
-            if (panelCanvasGroup == null)
-            {
+            if (panelCanvasGroup == null){
                 panelCanvasGroup = pathActionPanel.AddComponent<CanvasGroup>();
             }
 
@@ -123,8 +108,7 @@ public class PathSelector : MonoBehaviour{
         }
     }
 
-    void Update()
-    {
+    void Update(){
         if (actionPanelActive) return;
 
         UpdateHover();
@@ -136,13 +120,11 @@ public class PathSelector : MonoBehaviour{
         Vector3Int cellPos = BuildingSystem.current.gridLayout.WorldToCell(mousePos);
 
         hoveredPosition = cellPos;
-        validHover = BuildingSystem.current.IsPathAt(cellPos);
+        validHover = BuildingSystem.current.IsAnyPathAt(cellPos);
     }
 
-    private Vector3 GetMouseWorldPosition()
-    {
-        if (mainCamera != null && mousePositionAction != null)
-        {
+    private Vector3 GetMouseWorldPosition(){
+        if (mainCamera != null && mousePositionAction != null){
             Vector2 mousePos = mousePositionAction.action.ReadValue<Vector2>();
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, mainCamera.nearClipPlane));
             worldPos.z = 0;
@@ -152,49 +134,39 @@ public class PathSelector : MonoBehaviour{
     }
 
 
-    private void HandleHoldInput()
-    {
-        if (validHover && isMousePressed)
-        {
+    private void HandleHoldInput(){
+        if (validHover && isMousePressed){
             holdTimer += Time.deltaTime;
-            if (holdTimer >= holdTime && !isHolding)
-            {
+            if (holdTimer >= holdTime && !isHolding){
                 ShowPathActionPanel(hoveredPosition);
                 isHolding = true;
             }
         }
-        else
-        {
+        else{
             holdTimer = 0f;
             isHolding = false;
         }
     }
 
-    public void OnLeftClick(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
+    public void OnLeftClick(InputAction.CallbackContext context){
+        if (context.started){
             isMousePressed = true;
         }
-        else if (context.canceled)
-        {
+        else if (context.canceled){
             isMousePressed = false;
 
-            if (actionPanelActive && !IsClickOnPanel())
-            {
+            if (actionPanelActive && !IsClickOnPanel()){
                 HidePathActionPanel();
             }
         }
     }
 
-    private bool IsClickOnPanel()
-    {
+    private bool IsClickOnPanel(){
         if (pathActionPanel == null || mousePositionAction == null) return false;
 
         Vector2 mousePos = mousePositionAction.action.ReadValue<Vector2>();
         RectTransform panelRect = pathActionPanel.GetComponent<RectTransform>();
-        if (panelRect != null)
-        {
+        if (panelRect != null){
             return RectTransformUtility.RectangleContainsScreenPoint(panelRect, mousePos, targetCanvas?.worldCamera);
         }
         return false;
@@ -218,8 +190,7 @@ public class PathSelector : MonoBehaviour{
 
         pathActionPanel.SetActive(true);
 
-        if (panelCanvasGroup != null)
-        {
+        if (panelCanvasGroup != null){
             panelCanvasGroup.alpha = 1f;
             panelCanvasGroup.interactable = true;
             panelCanvasGroup.blocksRaycasts = true;
@@ -232,8 +203,7 @@ public class PathSelector : MonoBehaviour{
 
     private void HidePathActionPanel(){
         if (pathActionPanel != null){
-            if (panelCanvasGroup != null)
-            {
+            if (panelCanvasGroup != null){
                 panelCanvasGroup.alpha = 0f;
                 panelCanvasGroup.interactable = false;
                 panelCanvasGroup.blocksRaycasts = false;
@@ -261,14 +231,15 @@ public class PathSelector : MonoBehaviour{
             HidePathActionPanel();
         };
 
-        if (ConfirmationUi.instance != null){
+        if (ConfirmationUi.instance != null)
+        {
             ConfirmationUi.instance.ShowConfirmation(null, worldPos, confirmAction, cancelAction);
         }
-        else{
+        else
+        {
             BuildingSystem.current.RemovePath(hoveredPosition);
+            HidePathActionPanel();
         }
-
-        HidePathActionPanel();
    }
 
     private void OnCancelButtonClicked(){

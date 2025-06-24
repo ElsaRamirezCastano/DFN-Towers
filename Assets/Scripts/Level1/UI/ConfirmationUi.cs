@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ConfirmationUi : MonoBehaviour
-{
+public class ConfirmationUi : MonoBehaviour{
     public static ConfirmationUi instance;
 
     [SerializeField] private GameObject confirmationPanel;

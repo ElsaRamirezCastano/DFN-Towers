@@ -4,8 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 
-public class LevelSelectManager : MonoBehaviour
-{
+public class LevelSelectManager : MonoBehaviour{
 
     public List<AreaData> Areas;
     public int CurrentAreaIndex = 0;
@@ -25,16 +24,13 @@ public class LevelSelectManager : MonoBehaviour
     private List<GameObject> levelButtons = new List<GameObject>();
     private Dictionary<GameObject, Vector3> buttonPositions = new Dictionary<GameObject, Vector3>();
 
-    private void Awake()
-    {
+    private void Awake(){
         camera = Camera.main;
         eventSystemHandler = GetComponentInChildren<LevelSelectEventSystemHandler>(true);
     }
 
-    private void Start()
-    {
-        if (PlayerPrefs.GetInt("WorldUnlocked" + Areas[0].areaName, 0) == 0)
-        {
+    private void Start(){
+        if (PlayerPrefs.GetInt("WorldUnlocked" + Areas[0].areaName, 0) == 0){
             PlayerPrefs.SetInt("WorldUnlocked" + Areas[0].areaName, 1);
             PlayerPrefs.Save();
         }
@@ -45,26 +41,20 @@ public class LevelSelectManager : MonoBehaviour
         CreateLevelButtons();
     }
 
-    public void AssingAreaText()
-    {
+    public void AssingAreaText(){
         AreaHeaderText.SetText(CurrentArea.areaName);
     }
 
-    private void LoadUnlockedLevels()
-    {
-        foreach (var level in CurrentArea.levels)
-        {
-            if (level.IsUnlockedByDefault || PlayerPrefs.GetInt(level.levelID, 0) == 1)
-            {
+    private void LoadUnlockedLevels(){
+        foreach (var level in CurrentArea.levels){
+            if (level.IsUnlockedByDefault || PlayerPrefs.GetInt(level.levelID, 0) == 1){
                 UnlockedLevelsID.Add(level.levelID);
             }
         }
     }
 
-    private void CreateLevelButtons()
-    {
-        for (int i = 0; i < CurrentArea.levels.Count; i++)
-        {
+    private void CreateLevelButtons(){
+        for (int i = 0; i < CurrentArea.levels.Count; i++){
             GameObject buttonGO = Instantiate(LevelButtonPrefab, LevelParent);
             levelButtons.Add(buttonGO);
 
@@ -88,27 +78,23 @@ public class LevelSelectManager : MonoBehaviour
         eventSystemHandler.SetFirstSelected();
     }
 
-    private IEnumerator AddLocationAfterDelay(GameObject buttonGo, RectTransform buttonRect)
-    {
+    private IEnumerator AddLocationAfterDelay(GameObject buttonGo, RectTransform buttonRect){
         yield return null;
         Vector2 buttonScreenPoint = RectTransformUtility.WorldToScreenPoint(camera, buttonRect.position);
         Vector3 buttonWorldPos = camera.ScreenToWorldPoint(new Vector3(buttonScreenPoint.x, buttonScreenPoint.y, camera.nearClipPlane));
         buttonPositions.Add(buttonGo, buttonWorldPos);
     }
 
-    private IEnumerator SetupButtonNavigation()
-    {
+    private IEnumerator SetupButtonNavigation(){
         yield return null;
 
-        for (int i = 0; i < levelButtons.Count; i++)
-        {
+        for (int i = 0; i < levelButtons.Count; i++){
             GameObject currentButton = levelButtons[i];
             Vector3 currentPos = buttonPositions[currentButton];
             Selectable currentSelectable = currentButton.GetComponent<Selectable>();
             Navigation nav = new Navigation { mode = Navigation.Mode.Explicit };
 
-            if (i > 0 && UnlockedLevelsID.Contains(CurrentArea.levels[i].levelID))
-            {
+            if (i > 0 && UnlockedLevelsID.Contains(CurrentArea.levels[i].levelID)){
                 GameObject prevButton = levelButtons[i - 1];
                 Vector3 prevPos = buttonPositions[prevButton];
                 Vector3 dirToPrev = (prevPos - currentPos).normalized;
@@ -123,8 +109,7 @@ public class LevelSelectManager : MonoBehaviour
                     nav.selectOnDown = prevButton.GetComponent<Selectable>();
             }
 
-            if (i < levelButtons.Count - 1 && UnlockedLevelsID.Contains(CurrentArea.levels[i + 1].levelID))
-            {
+            if (i < levelButtons.Count - 1 && UnlockedLevelsID.Contains(CurrentArea.levels[i + 1].levelID)){
                 GameObject nextButton = levelButtons[i + 1];
                 Vector3 nextPos = buttonPositions[nextButton];
                 Vector3 dirToNext = (nextPos - currentPos).normalized;
@@ -143,8 +128,7 @@ public class LevelSelectManager : MonoBehaviour
     }
 
     #region Helper Methods
-    public void UnlockLevel(string levelID, LevelButton levelButton)
-    {
+    public void UnlockLevel(string levelID, LevelButton levelButton){
         UnlockedLevelsID.Add(levelID);
         levelButton.Unlock();
         PlayerPrefs.SetInt(levelID, 1);
@@ -153,36 +137,30 @@ public class LevelSelectManager : MonoBehaviour
     }
 
     [ContextMenu("Test Level Unlock")]
-    public void UnlockLevelTwoExample()
-    {
+    public void UnlockLevelTwoExample(){
         LevelButton levelButton = levelButtons[1].GetComponent<LevelButton>();
         string levelToUnlock = levelButton.LevelData.levelID;
         UnlockLevel(levelToUnlock, levelButton);
     }
     #endregion
 
-    public void GoToNextWorld()
-    {
-        if (CurrentAreaIndex < Areas.Count - 1 && IsWorldUnlocked(Areas[CurrentAreaIndex + 1].areaName))
-        {
+    public void GoToNextWorld(){
+        if (CurrentAreaIndex < Areas.Count - 1 && IsWorldUnlocked(Areas[CurrentAreaIndex + 1].areaName)){
             CurrentAreaIndex++;
             LoadCurrentArea();
             UpdateWorldNavigationButtons();
         }
     }
 
-    public void GoToPreviousWorld()
-    {
-        if (CurrentAreaIndex > 0)
-        {
+    public void GoToPreviousWorld(){
+        if (CurrentAreaIndex > 0){
             CurrentAreaIndex--;
             LoadCurrentArea();
             UpdateWorldNavigationButtons();
         }
     }
 
-    private void LoadCurrentArea()
-    {
+    private void LoadCurrentArea(){
         CurrentArea = Areas[CurrentAreaIndex];
         AssingAreaText();
         UnlockedLevelsID.Clear();
@@ -191,19 +169,16 @@ public class LevelSelectManager : MonoBehaviour
         FindFirstObjectByType<WorldBackgroundSwitcher>().SetWorldBackground(CurrentArea.areaName);
     }
 
-    private void UpdateWorldNavigationButtons()
-    {
+    private void UpdateWorldNavigationButtons(){
         previousWorldButton.gameObject.SetActive(CurrentAreaIndex > 0);
         bool nextWorldUnlocked = false;
-        if (CurrentAreaIndex < Areas.Count - 1)
-        {
+        if (CurrentAreaIndex < Areas.Count - 1){
             nextWorldUnlocked = IsWorldUnlocked(Areas[CurrentAreaIndex + 1].areaName);
             nextWorldButton.gameObject.SetActive(nextWorldUnlocked);
         }
     }
 
-    private bool IsWorldUnlocked(string worldName)
-    {
+    private bool IsWorldUnlocked(string worldName){
         return PlayerPrefs.GetInt("WorldUnlocked" + worldName, 0) == 1;
     }
 }

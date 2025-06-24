@@ -31,11 +31,9 @@ public class GameManager : MonoBehaviour{
     }
 
     private void InitializePanels(){
-        if (gameOverScreenPrefab != null)
-        {
+        if (gameOverScreenPrefab != null){
             CanvasGroup panelGroup = gameOverScreenPrefab.GetComponent<CanvasGroup>();
-            if (panelGroup != null)
-            {
+            if (panelGroup != null){
                 panelGroup.alpha = 0f;
                 panelGroup.interactable = false;
                 panelGroup.blocksRaycasts = false;
@@ -43,11 +41,9 @@ public class GameManager : MonoBehaviour{
             SetActive(gameOverScreenPrefab, false);
         }
 
-        if (winPanelPrefab != null)
-        {
+        if (winPanelPrefab != null){
             CanvasGroup panelGroup = winPanelPrefab.GetComponent<CanvasGroup>();
-            if (panelGroup != null)
-            {
+            if (panelGroup != null){
                 panelGroup.alpha = 0f;
                 panelGroup.interactable = false;
                 panelGroup.blocksRaycasts = false;
@@ -98,20 +94,17 @@ public class GameManager : MonoBehaviour{
         }
     }
 
-    private void GameOver()
-    {
+    private void GameOver(){
         Debug.Log("=== INICIANDO GAME OVER ===");
         Time.timeScale = 0f;
-        if (gameOverScreenPrefab != null)
-        {
+        if (gameOverScreenPrefab != null){
             Debug.Log("GameOverScreenPrefab encontrado");
 
             SetActive(gameOverScreenPrefab, true);
             Debug.Log($"GameObject activado: {gameOverScreenPrefab.activeInHierarchy}");
 
             CanvasGroup panelGroup = gameOverScreenPrefab.GetComponent<CanvasGroup>();
-            if (panelGroup != null)
-            {
+            if (panelGroup != null){
                 Debug.Log("CanvasGroup encontrado, configurando...");
                 panelGroup.alpha = 1f;
                 panelGroup.interactable = true;
@@ -119,23 +112,20 @@ public class GameManager : MonoBehaviour{
 
                 Debug.Log($"CanvasGroup configurado - Alpha: {panelGroup.alpha}, Interactable: {panelGroup.interactable}, BlocksRaycasts: {panelGroup.blocksRaycasts}");
             }
-            else
-            {
+            else{
                 Debug.LogWarning("No se encontró CanvasGroup en el GameOverPanel");
             }
 
             Button[] buttons = gameOverScreenPrefab.GetComponentsInChildren<Button>();
             Debug.Log($"Botones encontrados en GameOverPanel: {buttons.Length}");
 
-            foreach (Button btn in buttons)
-            {
+            foreach (Button btn in buttons){
                 Debug.Log($"Botón: {btn.name} - Interactable: {btn.interactable} - Enabled: {btn.enabled}");
                 btn.interactable = true;
                 btn.enabled = true;
 
                 Image img = btn.GetComponent<Image>();
-                if (img != null)
-                {
+                if (img != null){
                     img.raycastTarget = true;
                     Debug.Log($"Image del botón {btn.name} - RaycastTarget: {img.raycastTarget}");
                 }
@@ -163,9 +153,6 @@ public class GameManager : MonoBehaviour{
             BuildingSystem.current.RestoreDefaultPaths();
             BuildingSystem.current.ExitBuildMode();
         }
-        /*if(BuildingModeUI.instancne != null){
-            BuildingModeUI.instance.ResetUI();
-        }*/
         UpdateCounterUI();
     }
 
@@ -188,12 +175,10 @@ public class GameManager : MonoBehaviour{
     public void WinGame(){
         if(!gameOver){
             Time.timeScale = 0f;
-            if (winPanelPrefab != null)
-            {
+            if (winPanelPrefab != null){
                 SetActive(winPanelPrefab, true);
                 CanvasGroup panelGroup = winPanelPrefab.GetComponent<CanvasGroup>();
-                if (panelGroup != null)
-                {
+                if (panelGroup != null){
                     panelGroup.alpha = 1f;
                     panelGroup.interactable = true;
                     panelGroup.blocksRaycasts = true;

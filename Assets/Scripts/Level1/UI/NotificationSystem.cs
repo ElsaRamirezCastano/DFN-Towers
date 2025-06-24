@@ -4,8 +4,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class NotificationSystem : MonoBehaviour
-{
+public class NotificationSystem : MonoBehaviour{
    public static NotificationSystem instance;
 
    [SerializeField] private GameObject notificationPanel;

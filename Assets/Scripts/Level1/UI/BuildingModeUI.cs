@@ -22,107 +22,85 @@ public class BuildingModeUI : MonoBehaviour{
         HideBuildingModeUI();
     }
 
-    private void Start()
-    {
+    private void Start(){
         ValidateReferences();
         SetupButtons();
     }
 
-    private void ValidateReferences()
-    {
-        if (buildingModePanel == null)
-        {
+    private void ValidateReferences(){
+        if (buildingModePanel == null){
             buildingModePanel = transform.Find("BuildingButtonPanel")?.gameObject;
-            if (buildingModePanel == null)
-            {
+            if (buildingModePanel == null){
                 Debug.Log("BuildingButtonPanel not found in BuildingModeUI.");
             }
         }
 
-        if (towerButton == null)
-        {
+        if (towerButton == null){
             towerButton = GetComponentInChildren<Button>();
             Transform towerButtonTransform = transform.Find("BuildingButtonPanel/TowerBuilding");
-            if (towerButtonTransform != null)
-            {
+            if (towerButtonTransform != null){
                 towerButton = towerButtonTransform.GetComponent<Button>();
             }
         }
 
-        if (pathButton == null)
-        {
+        if (pathButton == null){
             Transform pathButtonTransform = transform.Find("BuildingButtonPanel/PathBuilding");
-            if (pathButtonTransform != null)
-            {
+            if (pathButtonTransform != null){
                 pathButton = pathButtonTransform.GetComponent<Button>();
             }
         }
 
-        if(closeButton == null)
-        {
+        if(closeButton == null){
             Transform closeButtonTransform = transform.Find("BuildingButtonPanel/CancelBuilding");
-            if (closeButtonTransform != null)
-            {
+            if (closeButtonTransform != null){
                 closeButton = closeButtonTransform.GetComponent<Button>();
             }
         }
     }
 
-    public void SetupButtons()
-    {
-        if (towerButton != null)
-        {
+    public void SetupButtons(){
+        if (towerButton != null){
             towerButton.onClick.RemoveAllListeners();
             towerButton.onClick.AddListener(() => OnTowerButtonClicked());
             Debug.Log("Tower button setup complete.");
         }
-        if (pathButton != null)
-        {
+        if (pathButton != null){
             pathButton.onClick.RemoveAllListeners();
             pathButton.onClick.AddListener(() => OnPathButtonClicked());
             Debug.Log("Path button setup complete.");
         }
 
-        if (closeButton != null)
-        {
+        if (closeButton != null){
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(() => OnCloseButtonClicked());
             Debug.Log("Close button setup complete.");
         }
     }
 
-    public void OnTowerButtonClicked()
-    {
+    public void OnTowerButtonClicked(){
         Debug.Log("Tower button clicked.");
-        if (BuildingSystem.current != null)
-        {
+        if (BuildingSystem.current != null){
             BuildingSystem.current.SetBuildingMode(BuildingType.Tower);
             HideBuildingModeUI();
         }
     }
 
-    public void OnPathButtonClicked()
-    {
-        if (BuildingSystem.current != null)
-        {
+    public void OnPathButtonClicked(){
+        if (BuildingSystem.current != null){
             BuildingSystem.current.SetBuildingMode(BuildingType.Path);
             HideBuildingModeUI();
         }
     }
 
-    public void OnCloseButtonClicked()
-    {
+    public void OnCloseButtonClicked(){
         HideBuildingModeUI();
-        if (BuildingSystem.current != null)
-        {
+        if (BuildingSystem.current != null){
             BuildingSystem.current.ExitBuildMode();
         }
     }
 
-    public void ShowBuildingModeUI()
-    {
-        if (buildingModePanel != null)
-        {
+    public void ShowBuildingModeUI(){
+        if (buildingModePanel != null){
             buildingModePanel.SetActive(true);
             StartCoroutine(ConfigureCanvasGroupDelayed());
             ValidateReferences();
@@ -130,27 +108,22 @@ public class BuildingModeUI : MonoBehaviour{
         }
     }
 
-    private System.Collections.IEnumerator ConfigureCanvasGroupDelayed()
-    {
+    private System.Collections.IEnumerator ConfigureCanvasGroupDelayed(){
         yield return null;
 
         CanvasGroup panelGroup = buildingModePanel.GetComponent<CanvasGroup>();
-        if (panelGroup != null)
-        {
+        if (panelGroup != null){
             panelGroup.alpha = 1f;
             panelGroup.interactable = true;
             panelGroup.blocksRaycasts = true;
         }
     }
 
-    public void HideBuildingModeUI()
-    {
-        if (buildingModePanel != null)
-        {
+    public void HideBuildingModeUI(){
+        if (buildingModePanel != null){
             buildingModePanel.SetActive(false);
             CanvasGroup panelGroup = buildingModePanel.GetComponent<CanvasGroup>();
-            if (panelGroup != null)
-            {
+            if (panelGroup != null){
                 panelGroup.alpha = 0f;
                 panelGroup.interactable = false;
                 panelGroup.blocksRaycasts = false;
@@ -158,8 +131,7 @@ public class BuildingModeUI : MonoBehaviour{
         }
     }
 
-    public void ResetUI()
-    {
+    public void ResetUI(){
         SetupButtons();
         HideBuildingModeUI();
     }

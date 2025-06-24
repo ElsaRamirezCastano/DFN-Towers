@@ -13184,10 +13184,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
-    - target: {fileID: 3197984522634658595, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_BlockingMask.m_Bits
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3333569165275334191, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
       propertyPath: m_SizeDelta.x
       value: 40
@@ -13228,33 +13224,9 @@ PrefabInstance:
       propertyPath: m_ActiveFontFeatures.Array.size
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5444800044741839164, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_UiScaleMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444800044741839164, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444800044741839164, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 2560
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444800044741839164, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 1440
-      objectReference: {fileID: 0}
     - target: {fileID: 5772128159695206849, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5994443964041911425, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5994443964041911425, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6385456211628573174, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
       propertyPath: m_Pivot.x

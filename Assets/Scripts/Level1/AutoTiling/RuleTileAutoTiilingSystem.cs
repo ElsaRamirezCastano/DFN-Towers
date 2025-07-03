@@ -30,8 +30,13 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         new Vector3Int(1, -1, 0), // Bottom-Right
     };
 
-    private void Awake(){
-        if (Instance != null && Instance != this){
+    private HashSet<Vector3Int> pendingUpdates = new HashSet<Vector3Int>();
+    private bool isUpdating = false;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
             Destroy(this);
             return;
         }
@@ -65,13 +70,13 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
 
         pathTilemap.SetTile(position, pathRuleTile);
 
-        RefreshArea(position);
+        UpdateTileAndNeighbors(position);
 
         Debug.Log("Placed path tile at: " + position);
     }
 
     public void PlacePathTiles(Vector3Int[] positions){
-        if (pathTilemap == null || pathRuleTile == null) return;
+        if (pathTilemap == null || pathRuleTile == null || positions == null) return;
 
         TileBase[] tiles = new TileBase[positions.Length];
         for (int i = 0; i < tiles.Length; i++){
@@ -80,17 +85,15 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
 
         pathTilemap.SetTiles(positions, tiles);
 
-        HashSet<Vector3Int> positionsToRefresh = new HashSet<Vector3Int>();
+        HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
         foreach (var pos in positions){
-            positionsToRefresh.Add(pos);
+            positionsToUpdate.Add(pos);
             foreach (var dir in neighborDirections){
-                positionsToRefresh.Add(pos + dir);
+                positionsToUpdate.Add(pos + dir);
             }
         }
 
-        foreach (var pos in positionsToRefresh){
-            RefreshSingleTile(pos);
-        }
+        UpdateTilesCascade(positionsToUpdate);
 
         Debug.Log($"{positions.Length} path tiles placed.");
     }
@@ -99,7 +102,7 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         if (pathTilemap == null) return;
 
         pathTilemap.SetTile(position, null);
-        RefreshArea(position);
+        UpdateNeighbors(position);
 
         Debug.Log("Removed path tile at: " + position);
     }
@@ -110,94 +113,132 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         TileBase[] nullTiles = new TileBase[positions.Length];
         pathTilemap.SetTiles(positions, nullTiles);
 
-        HashSet<Vector3Int> positionsToRefresh = new HashSet<Vector3Int>();
+        HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
         foreach (var pos in positions){
-            positionsToRefresh.Add(pos);
-            foreach (var dir in neighborDirections){
-                positionsToRefresh.Add(pos + dir);
+            foreach (var dir in neighborDirections)
+            {
+                Vector3Int neighborPos = pos + dir;
+                
+                if(!System.Array.Exists(positions, p => p == neighborPos)){
+                    positionsToUpdate.Add(neighborPos);
+                }
             }
         }
 
-        foreach (var pos in positionsToRefresh){
-            RefreshSingleTile(pos);
-        }
+        UpdateTilesCascade(positionsToUpdate);
 
         Debug.Log($"{positions.Length} path tiles removed.");
     }
 
-    private void RefreshArea(Vector3Int centerPosition, bool logRefresh = true){
-        if (pathTilemap == null) return;
+    private void UpdateTileAndNeighbors(Vector3Int position)
+    {
+        HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
+        positionsToUpdate.Add(position);
 
-        List<Vector3Int> positionsToRefresh = new List<Vector3Int>();
-        positionsToRefresh.Add(centerPosition);
-        //RefreshSingleTile(centerPosition);
         foreach (var dir in neighborDirections)
         {
-            positionsToRefresh.Add(centerPosition + dir);
-            //RefreshSingleTile(centerPosition + dir);
+            positionsToUpdate.Add(position + dir);
         }
 
-        foreach (var pos in positionsToRefresh)
-        {
-            RefreshSingleTile(pos);
-        }
-
-        pathTilemap.CompressBounds();
-
-        Debug.Log($"Refreshed area around: {centerPosition}");
+        UpdateTilesCascade(positionsToUpdate);
     }
 
-    private void RefreshSingleTile(Vector3Int position)
+    private void UpdateNeighbors(Vector3Int position)
     {
-        if (pathTilemap == null) return;
+        HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
+
+        foreach(var dir in neighborDirections)
+        {
+            positionsToUpdate.Add(position + dir);
+        }
+
+        UpdateTilesCascade(positionsToUpdate);
+    }
+
+    private bool UpdateSingleTileCascade(Vector3Int position)
+    {
+        if (pathTilemap == null || pathRuleTile == null) return false;
 
         TileBase currentTile = pathTilemap.GetTile(position);
+        if (currentTile == null) return false;
 
-        if (IsPathTileAt(position))
+        if (IsPathTile(currentTile))
         {
             //pathTilemap.SetTile(position, null);
             pathTilemap.SetTile(position, pathRuleTile);
-
-            pathTilemap.SetTileFlags(position, TileFlags.None);
+            return true;
+            Debug.Log($"Updated tile at {position}.");
         }
-        /*if (autoDetectPathTiles){
-            if (currentTile != null && currentTile != pathRuleTile){
-                pathTilemap.SetTile(position, pathRuleTile);
-            }
-            else if (currentTile == pathRuleTile){
-                pathTilemap.SetTile(position, pathRuleTile);
-            }
-        }
-        else{
-            if (currentTile != null && IsPathTile(currentTile)){
-                pathTilemap.SetTile(position, null);
-                pathTilemap.SetTile(position, pathRuleTile);
-            }
-        }*/
+        return false;
     }
 
-    public bool IsPathTileAt(Vector3Int position){
+    private void UpdateTilesCascade(HashSet<Vector3Int> startPositions)
+    {
+        var toUpdate = new Queue<Vector3Int>(startPositions);
+        var updated = new HashSet<Vector3Int>(startPositions);
+
+        while (toUpdate.Count > 0)
+        {
+            var pos = toUpdate.Dequeue();
+            bool changed = UpdateSingleTileCascade(pos);
+
+            if (changed)
+            {
+                foreach (var dir in neighborDirections)
+                {
+                    var neighbor = pos + dir;
+                    if (!updated.Contains(neighbor))
+                    {
+                        toUpdate.Enqueue(neighbor);
+                        updated.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        pathTilemap.CompressBounds();
+        RefreshTilemap();
+    }
+
+    private void RefreshTilemap()
+    {
+        if (pathTilemap == null) return;
+
+        pathTilemap.RefreshAllTiles();
+    }
+
+    public bool IsPathTileAt(Vector3Int position)
+    {
         if (pathTilemap == null) return false;
 
         TileBase tile = pathTilemap.GetTile(position);
 
-        if (autoDetectPathTiles){
-            return tile != null;
-        }
-        else{
-            return IsPathTile(tile);
-        }
+        return IsPathTile(tile);
     }
 
     private bool IsPathTile(TileBase tile){
         if (tile == null) return false;
 
         if (autoDetectPathTiles){
+            /*if (tile == pathRuleTile) return true;
+
+            if (pathTileTypes != null)
+            {
+                foreach (var pathType in pathTileTypes)
+                {
+                    if (tile == pathType) return true;
+                }
+            }*/
             return true;
         }
         else{
-            foreach (var pathType in pathTileTypes){
-                if (tile == pathType) return true;
+            if (tile == pathRuleTile) return true;
+            if (pathTileTypes != null)
+            {
+                foreach (var pathType in pathTileTypes)
+                {
+                    if (tile == pathType) return true;
+                }
             }
             return false;
         }
@@ -221,38 +262,35 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         return pathPositions;
     }
 
-    public void RefreshEntireTilemap(){
-        if (pathTilemap == null) return;
+    public void RefreshAllPathTiles(){
+        if (pathTilemap == null || pathRuleTile == null) return;
 
         pathTilemap.CompressBounds();
         BoundsInt bounds = pathTilemap.cellBounds;
 
-        if (bounds.size.x > 0 && bounds.size.y > 0){
-            for (int x = bounds.xMin; x < bounds.xMax; x++){
-                for (int y = bounds.yMin; y < bounds.yMax; y++){
-                    Vector3Int position = new Vector3Int(x, y, 0);
-                    TileBase currentTile = pathTilemap.GetTile(position);
+        if (bounds.size.x <= 0 || bounds.size.y <= 0) return;
+        
+        HashSet<Vector3Int> pathPositions = new HashSet<Vector3Int>();
 
-                    if (autoDetectPathTiles){
-                        if (currentTile != null && currentTile != pathRuleTile){
-                            pathTilemap.SetTile(position, pathRuleTile);
-                        }
-                    }
-                    else{
-                        if (IsPathTile(currentTile) && currentTile != pathRuleTile){
-                            pathTilemap.SetTile(position, pathRuleTile);
-                        }
-                    }
-                }
-            }
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int position = new Vector3Int(x, y, 0);
+                TileBase currentTile = pathTilemap.GetTile(position);
 
-            for (int x = bounds.xMin; x < bounds.xMax; x++){
-                for (int y = bounds.yMin; y < bounds.yMax; y++){
-                    Vector3Int position = new Vector3Int(x, y, 0);
-                    RefreshSingleTile(position);
+                if (IsPathTile(currentTile))
+                {
+                    pathPositions.Add(position);
+                    if (currentTile != pathRuleTile)
+                    {
+                        pathTilemap.SetTile(position, pathRuleTile);
+                    }
                 }
             }
         }
+
+        UpdateTilesCascade(pathPositions);
 
         Debug.Log("Tilemap refreshed completely.");
     }
@@ -260,7 +298,7 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
     public void SyncWithExistingPaths(){
         if (pathTilemap == null || pathRuleTile == null) return;
 
-        List<Vector3Int> existingPaths = new List<Vector3Int>();
+        HashSet<Vector3Int> existingPaths = new HashSet<Vector3Int>();
         BoundsInt bounds = pathTilemap.cellBounds;
 
         for (int x = bounds.xMin; x < bounds.xMax; x++){
@@ -268,41 +306,29 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
                 Vector3Int position = new Vector3Int(x, y, 0);
                 TileBase existingTile = pathTilemap.GetTile(position);
 
-                if (autoDetectPathTiles){
-                    if (existingTile != null)
+                if (IsPathTile(existingTile)){
+                    existingPaths.Add(position);
+                    if (existingTile != pathRuleTile)
                     {
-                        if (existingTile != pathRuleTile)
-                        {
-                            pathTilemap.SetTile(position, pathRuleTile);
-                        }
-                        existingPaths.Add(position);
-                    }
-                }
-                else{
-
-                    if (IsPathTile(existingTile)){
-                        if (existingTile != pathRuleTile)
-                        {
-                            pathTilemap.SetTile(position, pathRuleTile);
-                        }
-                        existingPaths.Add(position);
+                        pathTilemap.SetTile(position, pathRuleTile);
                     }
                 }
             }
         }
 
-        HashSet<Vector3Int> positionsToRefresh = new HashSet<Vector3Int>();
+        HashSet<Vector3Int> allPositionsToUpdate = new HashSet<Vector3Int>();
         foreach (var pos in existingPaths){
-            positionsToRefresh.Add(pos);
+            allPositionsToUpdate.Add(pos);
             foreach (var dir in neighborDirections){
-                positionsToRefresh.Add(pos + dir);
+                Vector3Int neighborPos = pos + dir;
+                if (IsPathTileAt(neighborPos))
+                {
+                    allPositionsToUpdate.Add(neighborPos);
+                }
             }
         }
 
-        foreach (var pos in positionsToRefresh){
-            RefreshSingleTile(pos);
-        }
-
+        UpdateTilesCascade(allPositionsToUpdate);
         Debug.Log($"Synchronized with {existingPaths.Count} existing path tiles.");
     }
 
@@ -313,8 +339,8 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         previewTilemap.SetTile(position, previewTile);
     }
 
-    public void ShowVariousPreviews(Vector3Int[] positions){
-        if (previewTilemap == null || previewTile == null) return;
+    public void ShowMultiplePreviews(Vector3Int[] positions){
+        if (previewTilemap == null || previewTile == null || positions == null) return;
 
         ClearPreview();
         TileBase[] tiles = new TileBase[positions.Length];
@@ -335,33 +361,6 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         }
     }
 
-    public void ForceRuleTileUpdate()
-    {
-        if (pathTilemap == null || pathRuleTile == null) return;
-
-        pathTilemap.CompressBounds();
-        BoundsInt bounds = pathTilemap.cellBounds;
-
-        if (bounds.size.x > 0 && bounds.size.y > 0)
-        {
-            for(int x = bounds.xMin; x < bounds.xMax; x++)
-            {
-                for(int y = bounds.yMin; y < bounds.yMax; y++)
-                {
-                    Vector3Int position = new Vector3Int(x, y, 0);
-                    TileBase currentTile = pathTilemap.GetTile(position);
-
-                    if (currentTile != null)
-                    {
-                        pathTilemap.SetTile(position, null);
-                        pathTilemap.SetTile(position, pathRuleTile);
-                        pathTilemap.SetTileFlags(position, TileFlags.None);
-                    }
-                }
-            }
-        }
-    }
-
     public int GetNeighborCount(Vector3Int position)
     {
         int count = 0;
@@ -373,5 +372,45 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
             }
         }
         return count;
+    }
+
+    public void ForceCompleteUpdate()
+    {
+        if (pathTilemap == null || pathRuleTile == null) return;
+
+        pathTilemap.CompressBounds();
+        BoundsInt bounds = pathTilemap.cellBounds;
+
+        if (bounds.size.x <= 0 || bounds.size.y <= 0) return;
+
+        HashSet<Vector3Int> pathPositions = new HashSet<Vector3Int>();
+
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                Vector3Int position = new Vector3Int(x, y, 0);
+                TileBase currentTile = pathTilemap.GetTile(position);
+
+                if (IsPathTile(currentTile))
+                {
+                    pathPositions.Add(position);
+                }
+            }
+        }
+        foreach (var pos in pathPositions)
+        {
+            pathTilemap.SetTile(pos, null);
+        }
+
+        foreach (var pos in pathPositions)
+        {
+            pathTilemap.SetTile(pos, pathRuleTile);
+            pathTilemap.SetTileFlags(pos, TileFlags.None);
+        }
+
+        RefreshTilemap();
+
+        Debug.Log("Force complete update done.");
     }
 }

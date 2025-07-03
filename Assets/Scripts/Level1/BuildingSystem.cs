@@ -221,17 +221,18 @@ public class BuildingSystem : MonoBehaviour{
 
     public void RestoreDefaultPaths(){
         ClearAllPaths();
-        foreach (Vector3Int position in defaultPathPositions){
+        pathPositions = new List<Vector3Int>(defaultPathPositions);
+        foreach (Vector3Int position in defaultPathPositions)
+        {
             PathTilemap.SetTile(position, pathTile);
         }
-        pathPositions = new List<Vector3Int>(defaultPathPositions);
 
         /*if (autoTilingSystem != null){
             autoTilingSystem.RefreshAllPathTiles();
         }*/
 
         if (autoTilingRuleTileSystem != null){
-            autoTilingRuleTileSystem.RefreshEntireTilemap();
+            autoTilingRuleTileSystem.PlacePathTiles(defaultPathPositions.ToArray());
         }
         Debug.Log($"Restored {pathPositions.Count} default paths.");
     }
@@ -517,7 +518,6 @@ public class BuildingSystem : MonoBehaviour{
 
     public void PlacePath(Vector3Int position){
         if (CanPlacePath(position)){
-            PathTilemap.SetTile(position, pathTile);
             MainTilemap.SetTile(position, takenTile);
             if (!pathPositions.Contains(position)){
                 pathPositions.Add(position);
@@ -542,18 +542,12 @@ public class BuildingSystem : MonoBehaviour{
     }
 
     public void RemovePath(Vector3Int position){
-        TileBase tileAtPosition = PathTilemap.GetTile(position);
 
         if (IsAnyPathAt(position)){
-            PathTilemap.SetTile(position, null);
             MainTilemap.SetTile(position, null);
             if (pathPositions.Contains(position)){
                 pathPositions.Remove(position);
             }
-
-            /*if (autoTilingSystem != null){
-                autoTilingSystem.OnPathRemoved(position);
-            }*/
 
             if (autoTilingRuleTileSystem != null){
                 autoTilingRuleTileSystem.RemovePathTile(position);
@@ -753,7 +747,7 @@ public class BuildingSystem : MonoBehaviour{
         }*/
 
         if (autoTilingRuleTileSystem != null){
-            autoTilingRuleTileSystem.RefreshEntireTilemap();
+            autoTilingRuleTileSystem.RefreshAllPathTiles();
         }
     }
 }

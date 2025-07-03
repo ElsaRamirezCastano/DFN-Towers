@@ -7,11 +7,14 @@ using System.Collections;
 public class BuildingSystem : MonoBehaviour{
     public static BuildingSystem current;
     public GridLayout gridLayout;
+
+    [Header("Tilemaps")]
     public Tilemap MainTilemap;
     public Tilemap PathTilemap;
 
     public Tilemap PreviewPathTilemap;
 
+    [Header("Tile bases")]
     public TileBase takenTile;
     public TileBase pathTile;
 
@@ -20,6 +23,8 @@ public class BuildingSystem : MonoBehaviour{
     [Header("Path Tiles")]
     [SerializeField] private List<TileBase> pathTileVariants = new List<TileBase>();
 
+
+    [Header("Prefabs")]
     public GameObject buildingPrefab;
     public GameObject confirmationUIPrefab;
     public GameObject notificationSystemPrefab;
@@ -46,6 +51,10 @@ public class BuildingSystem : MonoBehaviour{
     private bool isRightClickPressed = false;
     private Vector3Int rightClickHoveredPosition = Vector3Int.zero;
     private bool rightClickValidHovered = false;
+
+    [Header("Auto-Tilling System")]
+    //[SerializeField] private AutoTilingSystem autoTilingSystem;
+    [SerializeField] private RuleTileAutoTiilingSystem autoTilingRuleTileSystem;
 
     private BuildingType currentBuildingType = BuildingType.None;
     private bool isInBuildMode = false;
@@ -92,7 +101,7 @@ public class BuildingSystem : MonoBehaviour{
             rightClickAction.action.canceled += OnRightClickCanceled;
         }
 
-        if(mousePositionAction != null){
+        if (mousePositionAction != null){
             mousePositionAction.action.Enable();
         }
     }
@@ -113,14 +122,22 @@ public class BuildingSystem : MonoBehaviour{
             rightClickAction.action.canceled -= OnRightClickCanceled;
             rightClickAction.action.Disable();
         }
-        
-        if(mousePositionAction != null){
+
+        if (mousePositionAction != null){
             mousePositionAction.action.Disable();
         }
     }
 
     private void Start(){
         StartCoroutine(InitializeSystemWithDelay());
+
+        /* if (autoTilingSystem == null){
+             autoTilingSystem = FindFirstObjectByType<AutoTilingSystem>();
+         }*/
+        
+        if (autoTilingRuleTileSystem == null){
+            autoTilingRuleTileSystem = FindFirstObjectByType<RuleTileAutoTiilingSystem>();
+        }
     }
 
     private IEnumerator InitializeSystemWithDelay(){
@@ -141,7 +158,7 @@ public class BuildingSystem : MonoBehaviour{
 
     private void OnLeftClick(InputAction.CallbackContext context){
         if (!systemInitialized) return;
-        
+
         Vector3 mouseWorldPos = GetMouseWorldPosition();
         Vector3Int currentCell = gridLayout.WorldToCell(mouseWorldPos);
 
@@ -158,21 +175,21 @@ public class BuildingSystem : MonoBehaviour{
                 case BuildingType.None:
                     break;
             }
-        }  
+        }
     }
 
     private void OnRightClickStarted(InputAction.CallbackContext context){
         if (!systemInitialized) return;
 
         if (isInBuildMode && currentBuildingType == BuildingType.Path){
-                isRightClickPressed = true;
-                rightClickHoldTimer = 0f;
-                isRightClickHolding = false;
+            isRightClickPressed = true;
+            rightClickHoldTimer = 0f;
+            isRightClickHolding = false;
 
-                Vector3 mouseWolrdPos = GetMouseWorldPosition();
-                Vector3Int currentCell = gridLayout.WorldToCell(mouseWolrdPos);
-                rightClickHoveredPosition = currentCell;
-                rightClickValidHovered = IsAnyPathAt(currentCell);
+            Vector3 mouseWolrdPos = GetMouseWorldPosition();
+            Vector3Int currentCell = gridLayout.WorldToCell(mouseWolrdPos);
+            rightClickHoveredPosition = currentCell;
+            rightClickValidHovered = IsAnyPathAt(currentCell);
         }
     }
 
@@ -208,6 +225,14 @@ public class BuildingSystem : MonoBehaviour{
             PathTilemap.SetTile(position, pathTile);
         }
         pathPositions = new List<Vector3Int>(defaultPathPositions);
+
+        /*if (autoTilingSystem != null){
+            autoTilingSystem.RefreshAllPathTiles();
+        }*/
+
+        if (autoTilingRuleTileSystem != null){
+            autoTilingRuleTileSystem.RefreshEntireTilemap();
+        }
         Debug.Log($"Restored {pathPositions.Count} default paths.");
     }
     private void InitializeUI(){
@@ -494,12 +519,18 @@ public class BuildingSystem : MonoBehaviour{
         if (CanPlacePath(position)){
             PathTilemap.SetTile(position, pathTile);
             MainTilemap.SetTile(position, takenTile);
-            if (!pathPositions.Contains(position))
-            {
+            if (!pathPositions.Contains(position)){
                 pathPositions.Add(position);
             }
 
             PreviewPathTilemap.SetTile(position, null);
+
+            /* if (autoTilingSystem != null){
+                 autoTilingSystem.OnPathPlaced(position);
+             }*/
+            if (autoTilingRuleTileSystem != null){
+                autoTilingRuleTileSystem.PlacePathTile(position);
+            }
 
             if (lastPreviewCell == position){
                 lastPreviewCell = Vector3Int.one * int.MaxValue;
@@ -519,9 +550,16 @@ public class BuildingSystem : MonoBehaviour{
             if (pathPositions.Contains(position)){
                 pathPositions.Remove(position);
             }
+
+            /*if (autoTilingSystem != null){
+                autoTilingSystem.OnPathRemoved(position);
+            }*/
+
+            if (autoTilingRuleTileSystem != null){
+                autoTilingRuleTileSystem.RemovePathTile(position);
+            }
             isWaitingForConfirmation = false;
-            if (NotificationSystem.instance != null)
-            {
+            if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Path removed");
             }
         }
@@ -569,18 +607,15 @@ public class BuildingSystem : MonoBehaviour{
         return true;
     }
 
-    public bool IsAnyPathAt(Vector3Int position)
-    {
+    public bool IsAnyPathAt(Vector3Int position){
         TileBase tileAtPosition = PathTilemap.GetTile(position);
 
         if (tileAtPosition == null) return false;
 
         if (tileAtPosition == pathTile) return true;
 
-        foreach (TileBase variant in pathTileVariants)
-        {
-            if (variant != null && tileAtPosition == variant)
-            {
+        foreach (TileBase variant in pathTileVariants){
+            if (variant != null && tileAtPosition == variant){
                 return true;
             }
         }
@@ -705,30 +740,20 @@ public class BuildingSystem : MonoBehaviour{
             }
         }
     }
-
-    /*private void RemovePath(Vector3Int position){
-        TileBase tileAtPosition = PathTilemap.GetTile(position);
-
-        if (tileAtPosition != null && tileAtPosition == pathTile){
-            PathTilemap.SetTile(position, null);
-            if (pathPositions.Contains(position)){
-                pathPositions.Remove(position);
-            }
-            if (NotificationSystem.instance != null){
-                NotificationSystem.instance.ShowNotification("Path removed succesfully");
-            }
-        }
-        else{
-            if (NotificationSystem.instance != null){
-                NotificationSystem.instance.ShowNotification("No path to remove here");
-            }
-        }
-    }*/
-    
     private void ClearPathPreview(){
         if (lastPreviewCell != Vector3Int.one * int.MaxValue){
             PreviewPathTilemap.SetTile(lastPreviewCell, null);
             lastPreviewCell = Vector3Int.one * int.MaxValue;
+        }
+    }
+
+    public void RefreshAutoTiling(){
+        /*if (autoTilingSystem != null){
+            autoTilingSystem.RefreshAllPathTiles();
+        }*/
+
+        if (autoTilingRuleTileSystem != null){
+            autoTilingRuleTileSystem.RefreshEntireTilemap();
         }
     }
 }

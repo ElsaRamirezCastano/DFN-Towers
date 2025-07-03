@@ -231,12 +231,10 @@ public class PathSelector : MonoBehaviour{
             HidePathActionPanel();
         };
 
-        if (ConfirmationUi.instance != null)
-        {
+        if (ConfirmationUi.instance != null){
             ConfirmationUi.instance.ShowConfirmation(null, worldPos, confirmAction, cancelAction);
         }
-        else
-        {
+        else{
             BuildingSystem.current.RemovePath(hoveredPosition);
             HidePathActionPanel();
         }

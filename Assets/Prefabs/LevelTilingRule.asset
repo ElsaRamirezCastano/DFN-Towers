@@ -1,0 +1,743 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8559f9d4c5b794edfa4f73bc2cc10a63, type: 3}
+  m_Name: LevelTilingRule
+  m_EditorClassIdentifier: 
+  rulesName: Default Path Rules
+  rules:
+  - ruleName: No Connections
+    tileToPlace: {fileID: 11400000, guid: 68d1722ef695a48cba15b5f135f2e4d9, type: 2}
+    priority: 100
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 0
+    right: 0
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Only Top
+    tileToPlace: {fileID: 11400000, guid: 3044158b96b7f45c38fdc42fdeb5b62d, type: 2}
+    priority: 90
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 0
+    right: 0
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Only Bottom
+    tileToPlace: {fileID: 11400000, guid: 69ff5783748e7486db47a6bea6e0307e, type: 2}
+    priority: 90
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 0
+    right: 0
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Only Right
+    tileToPlace: {fileID: 11400000, guid: cca1a62a422b24ff49d5b2e122ee3a24, type: 2}
+    priority: 90
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Only Left
+    tileToPlace: {fileID: 11400000, guid: 919006bfe6c954a339fa104d66a56a87, type: 2}
+    priority: 90
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right
+    tileToPlace: {fileID: 11400000, guid: decf0be42bbbe4a03bcdfdda359b3634, type: 2}
+    priority: 80
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Left
+    tileToPlace: {fileID: 11400000, guid: 09de499fed8df47f7a5ec3716851ba2c, type: 2}
+    priority: 80
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Bottom + Right
+    tileToPlace: {fileID: 11400000, guid: d94d006d338bd491491820ae6291b0a7, type: 2}
+    priority: 80
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Bottom + Left
+    tileToPlace: {fileID: 11400000, guid: 3d1414a001dec489fb495ba0a056b61b, type: 2}
+    priority: 80
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Bottom
+    tileToPlace: {fileID: 11400000, guid: eb875ad3cdbd4463885ca7150e5d9844, type: 2}
+    priority: 70
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 0
+    right: 0
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Right + Left
+    tileToPlace: {fileID: 11400000, guid: 4c74e983a7ce147639e7ce38f0987217, type: 2}
+    priority: 70
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Bottom
+    tileToPlace: {fileID: 11400000, guid: 9a1c5244989a14de99bddd52089cc427, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Left + Bottom
+    tileToPlace: {fileID: 11400000, guid: c5b7f6d3e64874903adb008800073511, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Right + Bottom + Left
+    tileToPlace: {fileID: 11400000, guid: 98b609d22646d40779218ae3cd4eea2f, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Right + Top + Left
+    tileToPlace: {fileID: 11400000, guid: 4b945bafe92de4251b4334691f40da01, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Cross
+    tileToPlace: {fileID: 11400000, guid: 7a1869ea5603843f2a1c739503aa40f0, type: 2}
+    priority: 50
+    topLeft: 0
+    top: 1
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Surrounded
+    tileToPlace: {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
+    priority: 30
+    topLeft: 1
+    top: 1
+    topRight: 1
+    left: 1
+    right: 1
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Left + Right + Bottom + Bottom-Left + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: cb128d4d3568b44df85ae800e8fc9268, type: 2}
+    priority: 70
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Left + Right + Top + Top-Left + Top-Right
+    tileToPlace: {fileID: 11400000, guid: df2c43b58b1cd4810b36f6df36aba38e, type: 2}
+    priority: 70
+    topLeft: 1
+    top: 1
+    topRight: 1
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Bottom + Top-Left + Left + Bottom-Left
+    tileToPlace: {fileID: 11400000, guid: 3977985c16b48421c883e925ece5bd77, type: 2}
+    priority: 70
+    topLeft: 1
+    top: 1
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Bottom + Top-Right + Right + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: 1240570f83f0f40be912201da15cff4a, type: 2}
+    priority: 70
+    topLeft: 0
+    top: 1
+    topRight: 1
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Bottom + Right + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: 0a412d8566085430d87d20f53baa7a35, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Bottom + Left + Bottom-Left
+    tileToPlace: {fileID: 11400000, guid: e34d5083570bd43b7842721e5b33c72c, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 0
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Top-Right
+    tileToPlace: {fileID: 11400000, guid: 5c89d54c9b54f4cc595375c48db4bbdf, type: 2}
+    priority: 60
+    topLeft: 0
+    top: 1
+    topRight: 1
+    left: 0
+    right: 1
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Left + Top-Left
+    tileToPlace: {fileID: 11400000, guid: bc7a225688fd7467fad6d426b3b534eb, type: 2}
+    priority: 60
+    topLeft: 1
+    top: 1
+    topRight: 0
+    left: 1
+    right: 0
+    bottomLeft: 0
+    bottom: 0
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Left + Bottom + Top-Left, Top-Right + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: 6b86e65f296b4423fb8535b0b4ff57f8, type: 2}
+    priority: 40
+    topLeft: 1
+    top: 1
+    topRight: 1
+    left: 1
+    right: 1
+    bottomLeft: 0
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Left + Bottom + Top-Left + Top-Right + Bottom-Left
+    tileToPlace: {fileID: 11400000, guid: ece0021247e76408d873c46835f3f874, type: 2}
+    priority: 40
+    topLeft: 1
+    top: 1
+    topRight: 1
+    left: 1
+    right: 1
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 0
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Left + Bottom + Top-Right + Bottom-Left + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: fa7045de61d5e4adea09fb293eaf016e, type: 2}
+    priority: 40
+    topLeft: 0
+    top: 1
+    topRight: 1
+    left: 1
+    right: 1
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  - ruleName: Top + Right + Left + Bottom + Top-Left + Bottom-Left + Bottom-Right
+    tileToPlace: {fileID: 11400000, guid: 48a0612cf39bb4c44a6fea9a926b499a, type: 2}
+    priority: 40
+    topLeft: 1
+    top: 1
+    topRight: 0
+    left: 1
+    right: 1
+    bottomLeft: 1
+    bottom: 1
+    bottomRight: 1
+    forbiddenTopLeft: 0
+    forbiddenTop: 0
+    forbiddenTopRight: 0
+    forbiddenLeft: 0
+    forbiddenRight: 0
+    forbiddenBottomLeft: 0
+    forbiddenBottom: 0
+    forbiddenBottomRight: 0
+    exactMatch: 1
+    ignoreUnmarkedConnections: 1
+    minConnectionsRequired: -1
+    maxConnectionsAllowed: -1
+    specificTileToCheck: []
+  useQuickSetup: 0
+  quickSetupTiles:
+  - {fileID: 11400000, guid: 68d1722ef695a48cba15b5f135f2e4d9, type: 2}
+  - {fileID: 11400000, guid: 3044158b96b7f45c38fdc42fdeb5b62d, type: 2}
+  - {fileID: 11400000, guid: 69ff5783748e7486db47a6bea6e0307e, type: 2}
+  - {fileID: 11400000, guid: cca1a62a422b24ff49d5b2e122ee3a24, type: 2}
+  - {fileID: 11400000, guid: 919006bfe6c954a339fa104d66a56a87, type: 2}
+  - {fileID: 11400000, guid: decf0be42bbbe4a03bcdfdda359b3634, type: 2}
+  - {fileID: 11400000, guid: 09de499fed8df47f7a5ec3716851ba2c, type: 2}
+  - {fileID: 11400000, guid: d94d006d338bd491491820ae6291b0a7, type: 2}
+  - {fileID: 11400000, guid: 3d1414a001dec489fb495ba0a056b61b, type: 2}
+  - {fileID: 11400000, guid: eb875ad3cdbd4463885ca7150e5d9844, type: 2}
+  - {fileID: 11400000, guid: 4c74e983a7ce147639e7ce38f0987217, type: 2}
+  - {fileID: 11400000, guid: 9a1c5244989a14de99bddd52089cc427, type: 2}
+  - {fileID: 11400000, guid: c5b7f6d3e64874903adb008800073511, type: 2}
+  - {fileID: 11400000, guid: 98b609d22646d40779218ae3cd4eea2f, type: 2}
+  - {fileID: 11400000, guid: 4b945bafe92de4251b4334691f40da01, type: 2}
+  - {fileID: 11400000, guid: 7a1869ea5603843f2a1c739503aa40f0, type: 2}
+  - {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
+  - {fileID: 11400000, guid: cb128d4d3568b44df85ae800e8fc9268, type: 2}
+  - {fileID: 11400000, guid: df2c43b58b1cd4810b36f6df36aba38e, type: 2}
+  - {fileID: 11400000, guid: 3977985c16b48421c883e925ece5bd77, type: 2}
+  - {fileID: 11400000, guid: 1240570f83f0f40be912201da15cff4a, type: 2}
+  - {fileID: 11400000, guid: 0a412d8566085430d87d20f53baa7a35, type: 2}
+  - {fileID: 11400000, guid: e34d5083570bd43b7842721e5b33c72c, type: 2}
+  - {fileID: 11400000, guid: 5c89d54c9b54f4cc595375c48db4bbdf, type: 2}
+  - {fileID: 11400000, guid: bc7a225688fd7467fad6d426b3b534eb, type: 2}
+  - {fileID: 11400000, guid: 6b86e65f296b4423fb8535b0b4ff57f8, type: 2}
+  - {fileID: 11400000, guid: ece0021247e76408d873c46835f3f874, type: 2}
+  - {fileID: 11400000, guid: fa7045de61d5e4adea09fb293eaf016e, type: 2}
+  - {fileID: 11400000, guid: 48a0612cf39bb4c44a6fea9a926b499a, type: 2}

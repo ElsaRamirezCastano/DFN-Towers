@@ -5,8 +5,7 @@ using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 [CreateAssetMenu(fileName = "new Rule Tile Configurator", menuName = "AutoTiling/Rule Tile Configurator")]
-public class RuleTileConfiguratior : ScriptableObject
-{
+public class RuleTileConfiguratior : ScriptableObject{
     [Header("Rule Tile configuratoion")]
     public RuleTile targetRuleTile;
 

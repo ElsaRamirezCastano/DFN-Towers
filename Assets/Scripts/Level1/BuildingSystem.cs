@@ -53,7 +53,6 @@ public class BuildingSystem : MonoBehaviour{
     private bool rightClickValidHovered = false;
 
     [Header("Auto-Tilling System")]
-    //[SerializeField] private AutoTilingSystem autoTilingSystem;
     [SerializeField] private RuleTileAutoTiilingSystem autoTilingRuleTileSystem;
 
     private BuildingType currentBuildingType = BuildingType.None;
@@ -64,6 +63,7 @@ public class BuildingSystem : MonoBehaviour{
     private Vector3Int lastPreviewCell = Vector3Int.one * int.MaxValue;
     private Vector3Int pendingPathPosition = Vector3Int.one * int.MaxValue;
     private bool isWaitingForConfirmation = false;
+    private bool isWaitingForDeletion = false;
 
     private bool systemInitialized = false;
 
@@ -130,10 +130,6 @@ public class BuildingSystem : MonoBehaviour{
 
     private void Start(){
         StartCoroutine(InitializeSystemWithDelay());
-
-        /* if (autoTilingSystem == null){
-             autoTilingSystem = FindFirstObjectByType<AutoTilingSystem>();
-         }*/
         
         if (autoTilingRuleTileSystem == null){
             autoTilingRuleTileSystem = FindFirstObjectByType<RuleTileAutoTiilingSystem>();
@@ -178,19 +174,31 @@ public class BuildingSystem : MonoBehaviour{
         }
     }
 
-    private void OnRightClickStarted(InputAction.CallbackContext context){
+    private void OnRightClickStarted(InputAction.CallbackContext context)
+    {
         if (!systemInitialized) return;
+
+        Debug.Log($"Right click started - IsInBuildMode: {isInBuildMode}, BuildingType: {currentBuildingType}");
 
         if (isInBuildMode && currentBuildingType == BuildingType.Path){
             isRightClickPressed = true;
             rightClickHoldTimer = 0f;
             isRightClickHolding = false;
 
-            Vector3 mouseWolrdPos = GetMouseWorldPosition();
-            Vector3Int currentCell = gridLayout.WorldToCell(mouseWolrdPos);
+            Vector3 mouseWorldPos = GetMouseWorldPosition();
+            Vector3Int currentCell = gridLayout.WorldToCell(mouseWorldPos);
             rightClickHoveredPosition = currentCell;
+
+            Debug.Log($"Right click at world pos: {mouseWorldPos}, cell: {currentCell}");
+            Debug.Log($"MainTilemap tile: {MainTilemap.GetTile(currentCell)}");
+            Debug.Log($"PathTilemap tile: {PathTilemap.GetTile(currentCell)}");
+            Debug.Log($"Position in pathPositions list: {pathPositions.Contains(currentCell)}");
+
             rightClickValidHovered = IsAnyPathAt(currentCell);
+
+             Debug.Log($"Right click started at {currentCell}, valid hover: {rightClickValidHovered}");
         }
+
     }
 
     private void OnRightClickCanceled(InputAction.CallbackContext context){
@@ -200,6 +208,7 @@ public class BuildingSystem : MonoBehaviour{
             isRightClickPressed = false;
             rightClickHoldTimer = 0f;
             isRightClickHolding = false;
+            Debug.Log("Right click canceled");
         }
     }
 
@@ -222,14 +231,9 @@ public class BuildingSystem : MonoBehaviour{
     public void RestoreDefaultPaths(){
         ClearAllPaths();
         pathPositions = new List<Vector3Int>(defaultPathPositions);
-        foreach (Vector3Int position in defaultPathPositions)
-        {
+        foreach (Vector3Int position in defaultPathPositions){
             PathTilemap.SetTile(position, pathTile);
         }
-
-        /*if (autoTilingSystem != null){
-            autoTilingSystem.RefreshAllPathTiles();
-        }*/
 
         if (autoTilingRuleTileSystem != null){
             autoTilingRuleTileSystem.PlacePathTiles(defaultPathPositions.ToArray());
@@ -362,6 +366,7 @@ public class BuildingSystem : MonoBehaviour{
         ClearPathPreview();
         pendingPathPosition = Vector3Int.one * int.MaxValue;
         isWaitingForConfirmation = false;
+        isWaitingForDeletion = false;
 
         if (NotificationSystem.instance != null){
             NotificationSystem.instance.ShowNotification("You are now in view mode");
@@ -501,6 +506,7 @@ public class BuildingSystem : MonoBehaviour{
                 NotificationSystem.instance.ShowNotification("Cannot place path here");
             }
         }
+        
     }
 
     public void ConfirmPathPlacement(){
@@ -525,9 +531,6 @@ public class BuildingSystem : MonoBehaviour{
 
             PreviewPathTilemap.SetTile(position, null);
 
-            /* if (autoTilingSystem != null){
-                 autoTilingSystem.OnPathPlaced(position);
-             }*/
             if (autoTilingRuleTileSystem != null){
                 autoTilingRuleTileSystem.PlacePathTile(position);
             }
@@ -552,7 +555,7 @@ public class BuildingSystem : MonoBehaviour{
             if (autoTilingRuleTileSystem != null){
                 autoTilingRuleTileSystem.RemovePathTile(position);
             }
-            isWaitingForConfirmation = false;
+            isWaitingForDeletion = false;
             if (NotificationSystem.instance != null){
                 NotificationSystem.instance.ShowNotification("Path removed");
             }
@@ -602,18 +605,20 @@ public class BuildingSystem : MonoBehaviour{
     }
 
     public bool IsAnyPathAt(Vector3Int position){
-        TileBase tileAtPosition = PathTilemap.GetTile(position);
+        bool inPathList = pathPositions.Contains(position);
 
-        if (tileAtPosition == null) return false;
+        TileBase pathTileAtPosition = PathTilemap.GetTile(position);
+        bool hasPathTile = pathTileAtPosition != null && (pathTileAtPosition == pathTile || pathTileVariants.Contains(pathTileAtPosition));
 
-        if (tileAtPosition == pathTile) return true;
+        Debug.Log($"IsAnyPathAt({position}):");
+        Debug.Log($"  - In pathPositions list: {inPathList}");
+        Debug.Log($"  - PathTilemap tile: {pathTileAtPosition}");
+        Debug.Log($"  - Has valid path tile: {hasPathTile}");
+        Debug.Log($"  - MainTilemap tile: {MainTilemap.GetTile(position)}");
 
-        foreach (TileBase variant in pathTileVariants){
-            if (variant != null && tileAtPosition == variant){
-                return true;
-            }
-        }
-        return false;
+       bool isPath = inPathList || hasPathTile;
+       Debug.Log($"IsAnyPathAt({position}): {isPath}");
+       return isPath;
     }
 
 
@@ -708,14 +713,22 @@ public class BuildingSystem : MonoBehaviour{
     }
 
     private void HandleRightClickHold(){
-        if (rightClickValidHovered && isRightClickPressed){
+        Debug.Log($"HandleRightClickHold - isRightClickPressed: {isRightClickPressed}, rightClickValidHovered: {rightClickValidHovered}, rightClickHoldTimer: {rightClickHoldTimer}");
+        if (isRightClickPressed && rightClickValidHovered){
+
             rightClickHoldTimer += Time.deltaTime;
+            Debug.Log($"Right click hold timer: {rightClickHoldTimer}/{rightClickHoldTime}");
+
             if (rightClickHoldTimer >= rightClickHoldTime && !isRightClickHolding){
+                Debug.Log("Right click hold time reached, showing deletion panel");
                 ShowPathDeletionPanel(rightClickHoveredPosition);
                 isRightClickHolding = true;
             }
         }
         else{
+            if (rightClickHoldTimer > 0f){
+                Debug.Log($"Right click hold reset - isRightClickPressed: {isRightClickPressed}, rightClickValidHovered: {rightClickValidHovered}");
+            }
             rightClickHoldTimer = 0f;
             isRightClickHolding = false;
         }
@@ -725,14 +738,16 @@ public class BuildingSystem : MonoBehaviour{
         if (IsAnyPathAt(position)){
             PathDeleteButton pathDeleteButton = FindFirstObjectByType<PathDeleteButton>();
             if (pathDeleteButton != null){
-                isWaitingForConfirmation = true;
+                isWaitingForDeletion = true;
                 pathDeleteButton.ShowDeleteButton(position);
+                Debug.Log("Path deletion panel shown");
             }
             else{
                 Debug.Log("PathDeleteButton not found, removing path directly");
                 RemovePath(position);
             }
         }
+        else{ Debug.Log("No path found at position for deletion"); }
     }
     private void ClearPathPreview(){
         if (lastPreviewCell != Vector3Int.one * int.MaxValue){
@@ -742,10 +757,6 @@ public class BuildingSystem : MonoBehaviour{
     }
 
     public void RefreshAutoTiling(){
-        /*if (autoTilingSystem != null){
-            autoTilingSystem.RefreshAllPathTiles();
-        }*/
-
         if (autoTilingRuleTileSystem != null){
             autoTilingRuleTileSystem.RefreshAllPathTiles();
         }

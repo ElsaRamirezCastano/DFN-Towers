@@ -33,10 +33,8 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
     private HashSet<Vector3Int> pendingUpdates = new HashSet<Vector3Int>();
     private bool isUpdating = false;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
+    private void Awake(){
+        if (Instance != null && Instance != this){
             Destroy(this);
             return;
         }
@@ -115,8 +113,7 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
 
         HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
         foreach (var pos in positions){
-            foreach (var dir in neighborDirections)
-            {
+            foreach (var dir in neighborDirections){
                 Vector3Int neighborPos = pos + dir;
                 
                 if(!System.Array.Exists(positions, p => p == neighborPos)){
@@ -130,41 +127,34 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         Debug.Log($"{positions.Length} path tiles removed.");
     }
 
-    private void UpdateTileAndNeighbors(Vector3Int position)
-    {
+    private void UpdateTileAndNeighbors(Vector3Int position){
         HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
         positionsToUpdate.Add(position);
 
-        foreach (var dir in neighborDirections)
-        {
+        foreach (var dir in neighborDirections){
             positionsToUpdate.Add(position + dir);
         }
 
         UpdateTilesCascade(positionsToUpdate);
     }
 
-    private void UpdateNeighbors(Vector3Int position)
-    {
+    private void UpdateNeighbors(Vector3Int position){
         HashSet<Vector3Int> positionsToUpdate = new HashSet<Vector3Int>();
 
-        foreach(var dir in neighborDirections)
-        {
+        foreach(var dir in neighborDirections){
             positionsToUpdate.Add(position + dir);
         }
 
         UpdateTilesCascade(positionsToUpdate);
     }
 
-    private bool UpdateSingleTileCascade(Vector3Int position)
-    {
+    private bool UpdateSingleTileCascade(Vector3Int position){
         if (pathTilemap == null || pathRuleTile == null) return false;
 
         TileBase currentTile = pathTilemap.GetTile(position);
         if (currentTile == null) return false;
 
-        if (IsPathTile(currentTile))
-        {
-            //pathTilemap.SetTile(position, null);
+        if (IsPathTile(currentTile)) {
             pathTilemap.SetTile(position, pathRuleTile);
             return true;
             Debug.Log($"Updated tile at {position}.");
@@ -172,23 +162,18 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         return false;
     }
 
-    private void UpdateTilesCascade(HashSet<Vector3Int> startPositions)
-    {
+    private void UpdateTilesCascade(HashSet<Vector3Int> startPositions){
         var toUpdate = new Queue<Vector3Int>(startPositions);
         var updated = new HashSet<Vector3Int>(startPositions);
 
-        while (toUpdate.Count > 0)
-        {
+        while (toUpdate.Count > 0){
             var pos = toUpdate.Dequeue();
             bool changed = UpdateSingleTileCascade(pos);
 
-            if (changed)
-            {
-                foreach (var dir in neighborDirections)
-                {
+            if (changed){
+                foreach (var dir in neighborDirections){
                     var neighbor = pos + dir;
-                    if (!updated.Contains(neighbor))
-                    {
+                    if (!updated.Contains(neighbor)){
                         toUpdate.Enqueue(neighbor);
                         updated.Add(neighbor);
                     }
@@ -200,15 +185,13 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         RefreshTilemap();
     }
 
-    private void RefreshTilemap()
-    {
+    private void RefreshTilemap(){
         if (pathTilemap == null) return;
 
         pathTilemap.RefreshAllTiles();
     }
 
-    public bool IsPathTileAt(Vector3Int position)
-    {
+    public bool IsPathTileAt(Vector3Int position){
         if (pathTilemap == null) return false;
 
         TileBase tile = pathTilemap.GetTile(position);
@@ -219,24 +202,11 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
     private bool IsPathTile(TileBase tile){
         if (tile == null) return false;
 
-        if (autoDetectPathTiles){
-            /*if (tile == pathRuleTile) return true;
-
-            if (pathTileTypes != null)
-            {
-                foreach (var pathType in pathTileTypes)
-                {
-                    if (tile == pathType) return true;
-                }
-            }*/
-            return true;
-        }
+        if (autoDetectPathTiles)return true;
         else{
             if (tile == pathRuleTile) return true;
-            if (pathTileTypes != null)
-            {
-                foreach (var pathType in pathTileTypes)
-                {
+            if (pathTileTypes != null){
+                foreach (var pathType in pathTileTypes){
                     if (tile == pathType) return true;
                 }
             }
@@ -272,18 +242,14 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         
         HashSet<Vector3Int> pathPositions = new HashSet<Vector3Int>();
 
-        for (int x = bounds.xMin; x < bounds.xMax; x++)
-        {
-            for (int y = bounds.yMin; y < bounds.yMax; y++)
-            {
+        for (int x = bounds.xMin; x < bounds.xMax; x++){
+            for (int y = bounds.yMin; y < bounds.yMax; y++){
                 Vector3Int position = new Vector3Int(x, y, 0);
                 TileBase currentTile = pathTilemap.GetTile(position);
 
-                if (IsPathTile(currentTile))
-                {
+                if (IsPathTile(currentTile)){
                     pathPositions.Add(position);
-                    if (currentTile != pathRuleTile)
-                    {
+                    if (currentTile != pathRuleTile){
                         pathTilemap.SetTile(position, pathRuleTile);
                     }
                 }
@@ -308,8 +274,7 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
 
                 if (IsPathTile(existingTile)){
                     existingPaths.Add(position);
-                    if (existingTile != pathRuleTile)
-                    {
+                    if (existingTile != pathRuleTile){
                         pathTilemap.SetTile(position, pathRuleTile);
                     }
                 }
@@ -321,8 +286,7 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
             allPositionsToUpdate.Add(pos);
             foreach (var dir in neighborDirections){
                 Vector3Int neighborPos = pos + dir;
-                if (IsPathTileAt(neighborPos))
-                {
+                if (IsPathTileAt(neighborPos)){
                     allPositionsToUpdate.Add(neighborPos);
                 }
             }
@@ -361,21 +325,17 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
         }
     }
 
-    public int GetNeighborCount(Vector3Int position)
-    {
+    public int GetNeighborCount(Vector3Int position){
         int count = 0;
-        foreach (var dir in neighborDirections)
-        {
-            if (IsPathTileAt(position + dir))
-            {
+        foreach (var dir in neighborDirections){
+            if (IsPathTileAt(position + dir)){
                 count++;
             }
         }
         return count;
     }
 
-    public void ForceCompleteUpdate()
-    {
+    public void ForceCompleteUpdate(){
         if (pathTilemap == null || pathRuleTile == null) return;
 
         pathTilemap.CompressBounds();
@@ -385,26 +345,21 @@ public class RuleTileAutoTiilingSystem : MonoBehaviour{
 
         HashSet<Vector3Int> pathPositions = new HashSet<Vector3Int>();
 
-        for (int x = bounds.xMin; x < bounds.xMax; x++)
-        {
-            for (int y = bounds.yMin; y < bounds.yMax; y++)
-            {
+        for (int x = bounds.xMin; x < bounds.xMax; x++){
+            for (int y = bounds.yMin; y < bounds.yMax; y++){
                 Vector3Int position = new Vector3Int(x, y, 0);
                 TileBase currentTile = pathTilemap.GetTile(position);
 
-                if (IsPathTile(currentTile))
-                {
+                if (IsPathTile(currentTile)){
                     pathPositions.Add(position);
                 }
             }
         }
-        foreach (var pos in pathPositions)
-        {
+        foreach (var pos in pathPositions){
             pathTilemap.SetTile(pos, null);
         }
 
-        foreach (var pos in pathPositions)
-        {
+        foreach (var pos in pathPositions){
             pathTilemap.SetTile(pos, pathRuleTile);
             pathTilemap.SetTileFlags(pos, TileFlags.None);
         }

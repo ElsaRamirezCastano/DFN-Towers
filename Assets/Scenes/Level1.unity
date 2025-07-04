@@ -1089,7 +1089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &80680819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2230,6 +2230,8 @@ MonoBehaviour:
   previewTilemap: {fileID: 2130506096}
   pathRuleTile: {fileID: 11400000, guid: bf25447fc2cf147338f11b0f2a14b654, type: 2}
   previewTile: {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
+  autoDetectPathTiles: 1
+  pathTileTypes: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -12237,7 +12239,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 79
+  m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.03333336, y: 0.03333336, z: 0}
   m_MaxChunkCount: 16

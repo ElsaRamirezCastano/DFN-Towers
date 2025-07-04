@@ -1064,6 +1064,7 @@ MonoBehaviour:
   confirmationUIPrefab: {fileID: 36795382624576274, guid: 4db9312c35f0d49bcbcf93ba2c59ef73, type: 3}
   notificationSystemPrefab: {fileID: 8027943562619400460, guid: dc88d1b8d47e74d2e9a408734cfa0be6, type: 3}
   buildingModeUIPrefab: {fileID: 8964534566228825595}
+  pathNodePrefab: {fileID: 388333798}
   maxTowersPerLevel: 3
   towers: []
   pathPositions: []
@@ -1089,7 +1090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &80680819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1125,6 +1126,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1617710832}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &108042013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 108042014}
+  - component: {fileID: 108042015}
+  m_Layer: 0
+  m_Name: DynamicPathSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &108042014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108042013}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1617710832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &108042015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108042013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa711ad41991a4253a023f241b18e257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPoint: {fileID: 419499633}
+  endPoint: {fileID: 1633053757}
+  availableWaypoints: []
 --- !u!1 &125886238 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 32452890482969152, guid: 624df649c362e4f6eb0fbac6682b28c2, type: 3}
@@ -1410,6 +1458,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &388333798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 388333799}
+  m_Layer: 0
+  m_Name: pathNodePrefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &388333799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388333798}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1617710832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &419499632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,652 +1647,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b39f05d3c9144f60aa4826454c742c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathTilemap: {fileID: 19296530}
-  previewTilemap: {fileID: 2130506096}
-  defaultPathTile: {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
-  previewTile: {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
-  connectivityRules:
-  - ruleName: No Connections
-    tileToPlace: {fileID: 11400000, guid: 68d1722ef695a48cba15b5f135f2e4d9, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 0
-    right: 0
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Only Top
-    tileToPlace: {fileID: 11400000, guid: 3044158b96b7f45c38fdc42fdeb5b62d, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 0
-    right: 0
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Only Bottom
-    tileToPlace: {fileID: 11400000, guid: 69ff5783748e7486db47a6bea6e0307e, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 0
-    right: 0
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Only Right
-    tileToPlace: {fileID: 11400000, guid: cca1a62a422b24ff49d5b2e122ee3a24, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Only Left
-    tileToPlace: {fileID: 11400000, guid: 919006bfe6c954a339fa104d66a56a87, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right
-    tileToPlace: {fileID: 11400000, guid: decf0be42bbbe4a03bcdfdda359b3634, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Left
-    tileToPlace: {fileID: 11400000, guid: 09de499fed8df47f7a5ec3716851ba2c, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Bottom + Right
-    tileToPlace: {fileID: 11400000, guid: d94d006d338bd491491820ae6291b0a7, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Bottom + Left
-    tileToPlace: {fileID: 11400000, guid: 3d1414a001dec489fb495ba0a056b61b, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Bottom
-    tileToPlace: {fileID: 11400000, guid: eb875ad3cdbd4463885ca7150e5d9844, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 0
-    right: 0
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Right + Left
-    tileToPlace: {fileID: 11400000, guid: 4c74e983a7ce147639e7ce38f0987217, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Bottom
-    tileToPlace: {fileID: 11400000, guid: 9a1c5244989a14de99bddd52089cc427, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Left + Bottom
-    tileToPlace: {fileID: 11400000, guid: c5b7f6d3e64874903adb008800073511, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Right + Bottom + Left
-    tileToPlace: {fileID: 11400000, guid: 98b609d22646d40779218ae3cd4eea2f, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Right + Top + Left
-    tileToPlace: {fileID: 11400000, guid: 4b945bafe92de4251b4334691f40da01, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Cross
-    tileToPlace: {fileID: 11400000, guid: 7a1869ea5603843f2a1c739503aa40f0, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Surrounded
-    tileToPlace: {fileID: 11400000, guid: 2600bc230e1f24d2881c65f123c80471, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 1
-    left: 1
-    right: 1
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Left + Right + Bottom + Bottom-Left + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: cb128d4d3568b44df85ae800e8fc9268, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Left + Right + Top + Top-Left + Top-Right
-    tileToPlace: {fileID: 11400000, guid: df2c43b58b1cd4810b36f6df36aba38e, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 1
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Bottom + Top-Left + Left + Bottom-Left
-    tileToPlace: {fileID: 11400000, guid: 3977985c16b48421c883e925ece5bd77, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Bottom + Top-Right + Right + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: 1240570f83f0f40be912201da15cff4a, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 1
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Bottom + Right + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: 0a412d8566085430d87d20f53baa7a35, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Bottom + Left + Bottom-Left
-    tileToPlace: {fileID: 11400000, guid: e34d5083570bd43b7842721e5b33c72c, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 0
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Top-Right
-    tileToPlace: {fileID: 11400000, guid: 5c89d54c9b54f4cc595375c48db4bbdf, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 1
-    left: 0
-    right: 1
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Left + Top-Left
-    tileToPlace: {fileID: 11400000, guid: bc7a225688fd7467fad6d426b3b534eb, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 0
-    left: 1
-    right: 0
-    bottomLeft: 0
-    bottom: 0
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Left + Bottom + Top-Left, Top-Right + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: 6b86e65f296b4423fb8535b0b4ff57f8, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 1
-    left: 1
-    right: 1
-    bottomLeft: 0
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Left + Bottom + Top-Left + Top-Right + Bottom-Left
-    tileToPlace: {fileID: 11400000, guid: ece0021247e76408d873c46835f3f874, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 1
-    left: 1
-    right: 1
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 0
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Left + Bottom + Top-Right + Bottom-Left + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: fa7045de61d5e4adea09fb293eaf016e, type: 2}
-    priority: 0
-    topLeft: 0
-    top: 1
-    topRight: 1
-    left: 1
-    right: 1
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  - ruleName: Top + Right + Left + Bottom + Top-Left + Bottom-Left + Bottom-Right
-    tileToPlace: {fileID: 11400000, guid: 48a0612cf39bb4c44a6fea9a926b499a, type: 2}
-    priority: 0
-    topLeft: 1
-    top: 1
-    topRight: 0
-    left: 1
-    right: 1
-    bottomLeft: 1
-    bottom: 1
-    bottomRight: 1
-    forbiddenTopLeft: 0
-    forbiddenTop: 0
-    forbiddenTopRight: 0
-    forbiddenLeft: 0
-    forbiddenRight: 0
-    forbiddenBottomLeft: 0
-    forbiddenBottom: 0
-    forbiddenBottomRight: 0
-    exactMatch: 1
-    minConnectionsRequired: -1
-    maxConnectionsAllowed: -1
-  pathTiles: []
-  enableDebugLogs: 0
-  showDebugGizmos: 0
 --- !u!114 &470284291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12012,6 +11445,8 @@ Transform:
   - {fileID: 1318643508}
   - {fileID: 1422690873}
   - {fileID: 470284289}
+  - {fileID: 388333799}
+  - {fileID: 108042014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1633053756
@@ -14363,5 +13798,5 @@ SceneRoots:
   - {fileID: 45684907}
   - {fileID: 6057992393247341943}
   - {fileID: 1803044517}
-  - {fileID: 1617710832}
   - {fileID: 1533287656}
+  - {fileID: 1617710832}

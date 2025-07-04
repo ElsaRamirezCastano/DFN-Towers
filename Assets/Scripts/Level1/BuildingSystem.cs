@@ -11,14 +11,14 @@ public class BuildingSystem : MonoBehaviour{
     [Header("Tilemaps")]
     public Tilemap MainTilemap;
     public Tilemap PathTilemap;
-
     public Tilemap PreviewPathTilemap;
+
 
     [Header("Tile bases")]
     public TileBase takenTile;
     public TileBase pathTile;
-
     public TileBase pathPreviewTile;
+
 
     [Header("Path Tiles")]
     [SerializeField] private List<TileBase> pathTileVariants = new List<TileBase>();
@@ -29,14 +29,19 @@ public class BuildingSystem : MonoBehaviour{
     public GameObject confirmationUIPrefab;
     public GameObject notificationSystemPrefab;
     public GameObject buildingModeUIPrefab;
+    public GameObject pathNodePrefab;
+
 
     [Header("Max towers per level")]
     [SerializeField] private int maxTowersPerLevel = 5;
     [SerializeField] public List<GameObject> towers = new List<GameObject>();
 
+
     [Header("Path System")]
     [SerializeField] private List<Vector3Int> pathPositions = new List<Vector3Int>();
     [SerializeField] private List<Vector3Int> defaultPathPositions = new List<Vector3Int>();
+    private Dictionary<Vector3Int, Transform> pathNodeTransforms = new Dictionary<Vector3Int, Transform>();
+
 
     [Header("Input Actions")]
     [SerializeField] private InputActionReference toggleBuildModeAction;
@@ -529,6 +534,13 @@ public class BuildingSystem : MonoBehaviour{
                 pathPositions.Add(position);
             }
 
+            if (!pathNodeTransforms.ContainsKey(position))
+            {
+                GameObject nodeObj = Instantiate(pathNodePrefab, gridLayout.CellToWorld(position), Quaternion.identity);
+                pathNodeTransforms[position] = nodeObj.transform;
+                DynamicPathSystem.Instance.AddWaypoint(nodeObj.transform);
+            }
+
             PreviewPathTilemap.SetTile(position, null);
 
             if (autoTilingRuleTileSystem != null){
@@ -552,7 +564,16 @@ public class BuildingSystem : MonoBehaviour{
                 pathPositions.Remove(position);
             }
 
-            if (autoTilingRuleTileSystem != null){
+            if (pathNodeTransforms.ContainsKey(position))
+            {
+                Transform nodeTransform = pathNodeTransforms[position];
+                DynamicPathSystem.Instance.RemoveWaypoint(nodeTransform);
+                Destroy(nodeTransform.gameObject);
+                pathNodeTransforms.Remove(position);
+            }
+
+            if (autoTilingRuleTileSystem != null)
+            {
                 autoTilingRuleTileSystem.RemovePathTile(position);
             }
             isWaitingForDeletion = false;
@@ -575,8 +596,16 @@ public class BuildingSystem : MonoBehaviour{
         for (int x = bounds.xMin; x < bounds.xMax; x++){
             for (int y = bounds.yMin; y < bounds.yMax; y++){
                 Vector3Int position = new Vector3Int(x, y, 0);
-                if (IsAnyPathAt(position)){
+                if (IsAnyPathAt(position))
+                {
                     pathPositions.Add(position);
+
+                    if (!pathNodeTransforms.ContainsKey(position))
+                    {
+                        GameObject nodeObj = Instantiate(pathNodePrefab, gridLayout.CellToWorld(position), Quaternion.identity);
+                        pathNodeTransforms[position] = nodeObj.transform;
+                        DynamicPathSystem.Instance.AddWaypoint(nodeObj.transform);
+                    }
                 }
             }
         }

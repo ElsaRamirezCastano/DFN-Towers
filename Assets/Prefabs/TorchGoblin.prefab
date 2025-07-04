@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 8791891134336001755}
   - component: {fileID: 778733500428975697}
   - component: {fileID: 4733635483601359031}
+  - component: {fileID: -3658575537094604010}
   m_Layer: 0
   m_Name: TorchGoblin
   m_TagString: Enemy
@@ -255,9 +256,26 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8677655921010188530}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09ab1543f43ba4ee485d3b82f7d3f13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 4
+  upSprite: {fileID: 4603316556706280259, guid: 739d094c27a594a7d88201e35b9733b6, type: 3}
+  downSprite: {fileID: -2412321023182316411, guid: 739d094c27a594a7d88201e35b9733b6, type: 3}
+  leftSprite: {fileID: 1208040086343421634, guid: b3a370021248d4ad08909f5ddec151a9, type: 3}
+  rightSprite: {fileID: -4230181108591323607, guid: 739d094c27a594a7d88201e35b9733b6, type: 3}
+--- !u!114 &-3658575537094604010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8677655921010188530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35149c7c158cb4b4f9fa6c2553f90b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
